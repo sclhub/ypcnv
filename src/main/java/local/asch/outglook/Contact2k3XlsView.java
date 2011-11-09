@@ -188,12 +188,11 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      *            - aContactList
      * @param fileNameForUse
      *            - fileNameForUse
+     * @throws InvalidFormatException 
      * @throws IOException
-     * @throws InvalidFormatException
      */
-    public Contact2k3XlsView(ArrayList<Contact2k3> aContactList,
-            File fileNameForUse) throws InvalidFormatException, IOException {
-
+    Contact2k3XlsView(ArrayList<Contact2k3> aContactList,
+            File fileNameForUse) throws InvalidFormatException {
         super(aContactList, fileNameForUse);
         tryGetWorkbook();
     }
@@ -220,7 +219,6 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      * {@inheritDoc}
      * 
      * @throws IOException
-     * @throws InvalidFormatException
      * @see local.asch.outglook.Contact2k3FileView#setView()
      */
     public void setView() {
@@ -240,8 +238,6 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      * {@inheritDoc}
      * 
      * @throws FileViewException
-     * @throws IOException
-     * @throws InvalidFormatException
      * @see local.asch.outglook.Contact2k3FileView#getView()
      */
     public void getView() throws FileViewException {
@@ -255,17 +251,16 @@ public class Contact2k3XlsView extends Contact2k3FileView {
         int headerRowIdx = 0 ;
         HSSFSheet currentSheet = xlsWorkbook.getSheetAt(currentSheetIdx);
         HSSFRow headerRow = currentSheet.getRow(headerRowIdx);
+        
         validateHeaderNames(headerRow);
         readDataToModel(headerRow);
     }
 
     /**
      * If workbook was not already created, then try to create instance.
-     * 
-     * @throws InvalidFormatException
-     * @throws IOException
+     * @throws InvalidFormatException 
      */
-    private void tryGetWorkbook() {
+    private void tryGetWorkbook() throws InvalidFormatException {
         if (xlsWorkbook != null) {
             return;
         }
@@ -283,6 +278,10 @@ public class Contact2k3XlsView extends Contact2k3FileView {
                     containerFileName.getAbsoluteFile()));
             e.printStackTrace();
         } catch (InvalidFormatException e) {
+            
+            System.out.println(String.format(ERR_MESSAGE_WORKBOOK_WRONG_FORMAT,
+                    containerFileName.getAbsoluteFile()));
+            
             LOG.error(String.format(ERR_MESSAGE_WORKBOOK_WRONG_FORMAT,
                     containerFileName.getAbsoluteFile()));
             e.printStackTrace();
@@ -335,7 +334,12 @@ public class Contact2k3XlsView extends Contact2k3FileView {
     private void validateHeaderNames(HSSFRow headerRow)
             throws FileViewException {
         startColumnIdx = (int) headerRow.getFirstCellNum();
-        stopColumnIdx = (int) headerRow.getLastCellNum();
+        /*
+         * It's Apache POI feature - getLastCellNum gets the index of the last
+         * cell contained in this row PLUS ONE.
+         */
+        stopColumnIdx = -1 + (int) headerRow.getLastCellNum();
+
         /* Whether quantity of fields is valid. */
         int foundQuantityOfDataFields = 1 + stopColumnIdx - startColumnIdx;
         if (foundQuantityOfDataFields != Contact2k3.getDataFieldsQuantity()
@@ -346,7 +350,7 @@ public class Contact2k3XlsView extends Contact2k3FileView {
                     "Contact2k3XlsView.checkHeaderNames()", message);
         }
         /* Whether data fields names are valid. */
-        for (int idx = startColumnIdx; idx < stopColumnIdx; idx++) {
+        for (int idx = startColumnIdx; idx <= stopColumnIdx; idx++) {
             HSSFCell currentCell = headerRow.getCell(idx);
             String xlsFieldName = currentCell.getStringCellValue();
             String dataFieldKeyName = CONTAINER_FIELD_NAMING_MAP
@@ -374,7 +378,7 @@ public class Contact2k3XlsView extends Contact2k3FileView {
         HSSFSheet currentSheet = headerRow.getSheet();
         int lastRowIdx = currentSheet.getLastRowNum();
         int currentRowIdx = headerRow.getRowNum() + 1;
-        for (; currentRowIdx < lastRowIdx; currentRowIdx++) {
+        for (; currentRowIdx <= lastRowIdx; currentRowIdx++) {
             Contact2k3 currentContact = new Contact2k3();
 
             for (String dataFieldKeyName : currentContact.getFieldValuesMap()

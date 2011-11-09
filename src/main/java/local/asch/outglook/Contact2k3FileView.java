@@ -29,9 +29,6 @@ import java.io.IOException;
 
 import local.asch.outglook.exceptions.FileViewException;
 
-
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-
 /**
  * @version 2011-09-14_17-49
  *
@@ -84,16 +81,13 @@ abstract class Contact2k3FileView {
 
     /**
      * This should put data taken from the "model" into the "view".
-     * @throws IOException 
-     * @throws InvalidFormatException 
      */
     abstract public void setView();
 
     /**
      * This should get data from the "view" and put it into the "model".
-     * @throws FileViewException 
-     * @throws IOException 
-     * @throws InvalidFormatException 
+     * 
+     * @throws FileViewException
      */
     abstract public void getView() throws FileViewException;
 

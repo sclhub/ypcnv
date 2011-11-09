@@ -1,4 +1,3 @@
-package local.asch.outglook;
 /*
  *  Copyright 2011 ASCH
  *  
@@ -18,6 +17,7 @@ package local.asch.outglook;
  *  along with YPCnv.  If not, see <http://www.gnu.org/licenses/>.
  *  
  */
+package local.asch.outglook;
 
 import static org.junit.Assert.assertEquals;
 
@@ -33,10 +33,12 @@ import java.util.Iterator;
 import local.asch.outglook.exceptions.Contact2k3Exception;
 import local.asch.outglook.exceptions.FileViewException;
 
+
+
 public class Contact2k3XlsViewTest {
-    ArrayList<Contact2k3> aContactList = new ArrayList<Contact2k3>();
-    File testInputFile = new File("src/test/java/resources/", "contacts2k3.xls");
-    
+    private ArrayList<Contact2k3> contactList = new ArrayList<Contact2k3>();
+    private File testInputFile = new File("src/test/java/resources/", "contacts2k3.xls");
+
     @Test
     public void test01(){
         assertEquals("EXIST", testInputFile.exists() ? "EXIST" : "NotFound" ) ;
@@ -46,15 +48,12 @@ public class Contact2k3XlsViewTest {
     public void test02() throws Contact2k3Exception, IOException,
             FileViewException, InvalidFormatException {
         System.out.println("===> " + testInputFile.getAbsolutePath());
-        for (int i = 0; i < 3; i++) {
-            aContactList.add(new Contact2k3());
-        }
-            Contact2k3XlsView xlsContainer = new Contact2k3XlsView(aContactList,
-                                                            testInputFile);
+        Contact2k3XlsView xlsContainer = new Contact2k3XlsView(contactList, testInputFile);
         xlsContainer.getView();
-        // ArrayList<Contact2k3> obtainedContactList;
-        // obtainedContactList = xlsContainer.get();
-        // System.out.println("===> " + obtainedContactList);
+        ArrayList<Contact2k3> obtainedContactList;
+        obtainedContactList = xlsContainer.get();
+        System.out.println("===> " + obtainedContactList);
+        System.out.println("===> +++++++++++");
     }
 
     @Test
@@ -70,7 +69,7 @@ public class Contact2k3XlsViewTest {
 //      System.out.println("--->" + xlsView + "|");
 //
 //      System.out.println("--->" + "" + "|");
-        insertFakeData(aContactList);
+        insertFakeData(contactList);
         
     }
 

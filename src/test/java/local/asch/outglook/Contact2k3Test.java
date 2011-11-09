@@ -37,13 +37,13 @@ public class Contact2k3Test {
         contactSingle.setValue(key, value);
 
         String message = String.format("For key '%s' value is: ", key);
-        assertEquals(message, value , contactSingle.getfieldValuesMap().get(key));
+        assertEquals(message, value , contactSingle.getFieldValuesMap().get(key));
 
     }
 
     @Test
     public void test02() {
-        assertEquals(contactSingle.getfieldValuesMap().size(),
+        assertEquals(contactSingle.getFieldValuesMap().size(),
                 Contact2k3.FIELD_DESCRIPTION_MAP.size());
     }
 

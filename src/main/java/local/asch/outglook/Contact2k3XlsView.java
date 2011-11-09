@@ -377,7 +377,7 @@ public class Contact2k3XlsView extends Contact2k3FileView {
         for (; currentRowIdx < lastRowIdx; currentRowIdx++) {
             Contact2k3 currentContact = new Contact2k3();
 
-            for (String dataFieldKeyName : currentContact.getfieldValuesMap()
+            for (String dataFieldKeyName : currentContact.getFieldValuesMap()
                     .keySet()) {
                 int cellIdx = dataColumnsSequenceMap.get(dataFieldKeyName);
                 String cellValue = getCellContent(currentSheet.getRow(

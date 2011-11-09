@@ -366,7 +366,7 @@ public class Contact2k3 {
         throw new Contact2k3Exception(null, "Contact2k3.setValue()", message);
     }
 
-    public HashMap<String, String> getfieldValuesMap() {
+    public HashMap<String, String> getFieldValuesMap() {
         return fieldValuesMap;
     }
 

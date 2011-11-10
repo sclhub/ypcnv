@@ -83,8 +83,10 @@ abstract class Contact2k3FileView {
 
     /**
      * This should put data taken from the "model" into the "view".
+     * @throws FileViewException 
+     * @throws IOException 
      */
-    abstract public void setView();
+    abstract public void setView() throws FileViewException, IOException;
 
     /**
      * This should get data from the "view" and put it into the "model".

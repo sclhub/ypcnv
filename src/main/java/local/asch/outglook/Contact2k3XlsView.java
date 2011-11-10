@@ -23,6 +23,7 @@ package local.asch.outglook;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,7 +56,7 @@ public class Contact2k3XlsView extends Contact2k3FileView {
     private static final Logger LOG = Logger.getLogger(Contact2k3XlsView.class);
 
     /* Error messages. */
-    private static final String ERR_MESSAGE_FILE_OPEN = "Failed with file '%s'.";
+    private static final String ERR_MESSAGE_FILE_ACCESS = "Failed with file '%s'.";
     private static final String ERR_MESSAGE_FILE_SAVE = "Failed with file '%s'.";
     private static final String ERR_MESSAGE_WORKBOOK_WRONG_FORMAT = "Failed with file '%s'.";
     private static final String ERR_MESSAGE_WRONG_FIELD_QUANTITY = "In workbook file '%s' number of data fields in header row does not equals to expected value '%d'.";
@@ -71,7 +72,7 @@ public class Contact2k3XlsView extends Contact2k3FileView {
     private Integer stopColumnIdx;
 
     /**
-     * Mapping between data fileds names(map keys) and their column number(map
+     * Mapping between data fields names(map keys) and their column number(map
      * values) in work sheet.
      */
     private HashMap<String, Integer> dataColumnsSequenceMap = new HashMap<String, Integer>();
@@ -217,21 +218,15 @@ public class Contact2k3XlsView extends Contact2k3FileView {
 
     /**
      * {@inheritDoc}
-     * 
+     * @throws FileViewException 
      * @throws IOException
      * @see local.asch.outglook.Contact2k3FileView#setView()
      */
-    public void setView() {
-        /*
-         * TODO Write down into file
-         */
-        try {
-            saveToFile();
-        } catch (IOException e) {
-            LOG.error(String.format(ERR_MESSAGE_FILE_SAVE,
-                    containerFileName.getAbsoluteFile()));
-            e.printStackTrace();
-        }
+    public void setView() throws FileViewException, IOException {
+        HSSFRow headerRow = findHeaderRow(xlsWorkbook);
+        validateHeaderNames(headerRow);
+        insertDataToWorkbook(headerRow);
+        saveToFile();
     }
 
     /**
@@ -241,24 +236,36 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      * @see local.asch.outglook.Contact2k3FileView#getView()
      */
     public void getView() throws FileViewException {
+        HSSFRow headerRow = findHeaderRow(xlsWorkbook);
+        validateHeaderNames(headerRow);
+        insertDataToModel(headerRow);
+    }
+
+    /**
+     * Search for an a row with the data columns headers.
+     * 
+     * @param workbook
+     *            - where to search.
+     * @return The row number (zero based).
+     */
+    private HSSFRow findHeaderRow(HSSFWorkbook workbook) {
         if (xlsWorkbook.getNumberOfSheets() > 1) {
             LOG.info(String
                     .format("In workbook file '%s' there is more than one worksheet. Will use the first one.",
                             containerFileName.getAbsoluteFile()));
         }
-        int currentSheetIdx = 0 ;
 
-        int headerRowIdx = 0 ;
-        HSSFSheet currentSheet = xlsWorkbook.getSheetAt(currentSheetIdx);
-        HSSFRow headerRow = currentSheet.getRow(headerRowIdx);
-        
-        validateHeaderNames(headerRow);
-        readDataToModel(headerRow);
+        int choosenSheetIdx = 0 ; //XXX
+        int headerRowIdx = 0 ; //XXX
+
+        int idx = xlsWorkbook.getSheetIndex("Sheet1");
+        HSSFSheet currentSheet = xlsWorkbook.getSheetAt(choosenSheetIdx);
+        return currentSheet.getRow(headerRowIdx);
     }
-
+    
     /**
-     * If workbook was not already created, then try to create instance.
-     * @throws InvalidFormatException 
+     * Obtain workbook object instance.
+     * @throws InvalidFormatException
      */
     private void tryGetWorkbook() throws InvalidFormatException {
         if (xlsWorkbook != null) {
@@ -266,15 +273,21 @@ public class Contact2k3XlsView extends Contact2k3FileView {
         }
 
         try {
-            containerFileStreamIn = new FileInputStream(containerFileName);
-            xlsWorkbook = (HSSFWorkbook) WorkbookFactory
-                    .create(containerFileStreamIn);
+            if( containerFileName.exists()) {
+                containerFileStreamIn = new FileInputStream(containerFileName);
+                xlsWorkbook = (HSSFWorkbook) WorkbookFactory
+                        .create(containerFileStreamIn);
+            } else {
+                xlsWorkbook = new HSSFWorkbook();
+                containerFileStreamOut = new FileOutputStream(containerFileName);
+                xlsWorkbook.write(containerFileStreamOut);
+            }
         } catch (FileNotFoundException e) {
-            LOG.error(String.format(ERR_MESSAGE_FILE_OPEN,
+            LOG.error(String.format(ERR_MESSAGE_FILE_ACCESS,
                     containerFileName.getAbsoluteFile()));
             e.printStackTrace();
         } catch (IOException e) {
-            LOG.error(String.format(ERR_MESSAGE_FILE_OPEN,
+            LOG.error(String.format(ERR_MESSAGE_FILE_ACCESS,
                     containerFileName.getAbsoluteFile()));
             e.printStackTrace();
         } catch (InvalidFormatException e) {
@@ -296,6 +309,16 @@ public class Contact2k3XlsView extends Contact2k3FileView {
                     e.printStackTrace();
                 }
             }
+            if (containerFileStreamOut != null) {
+                try {
+                    containerFileStreamOut.close();
+                } catch (IOException e) {
+                    LOG.error(String.format(
+                            "Failed to close output stream for file '%s'.",
+                            containerFileName.getAbsoluteFile()));
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -310,13 +333,16 @@ public class Contact2k3XlsView extends Contact2k3FileView {
             containerFileStreamOut = new FileOutputStream(containerFileName);
             xlsWorkbook.write(containerFileStreamOut);
         } catch (FileNotFoundException e) {
-            LOG.error(String.format(ERR_MESSAGE_FILE_OPEN,
+            LOG.error(String.format(ERR_MESSAGE_FILE_ACCESS,
+                    containerFileName.getAbsoluteFile()));
+            e.printStackTrace();
+        } catch (IOException e) {
+            LOG.error(String.format(ERR_MESSAGE_FILE_SAVE,
                     containerFileName.getAbsoluteFile()));
             e.printStackTrace();
         } finally {
             containerFileStreamOut.close();
         }
-
     }
 
     /**
@@ -324,7 +350,9 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      * expected names of data fields. <br>
      * <br>
      * XLS workbooks generated by MS-Outlook while contacts export all ways have
-     * fixed number of data fields.
+     * fixed number of data fields.<br>
+     * <br>
+     * Obtain meta data concerning distribution of header names.
      * 
      * @param headerRow
      *            - row to be processed.
@@ -374,7 +402,7 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      *            columns headers.
      * @throws Contact2k3Exception
      */
-    private void readDataToModel(HSSFRow headerRow) {
+    private void insertDataToModel(HSSFRow headerRow) {
         HSSFSheet currentSheet = headerRow.getSheet();
         int lastRowIdx = currentSheet.getLastRowNum();
         int currentRowIdx = headerRow.getRowNum() + 1;
@@ -395,6 +423,49 @@ public class Contact2k3XlsView extends Contact2k3FileView {
                 }
             }
             containerModelList.add(currentContact);
+        }
+    }
+
+    /**
+     * Insert data from model into workbook object instance.
+     * 
+     * @param headerRow
+     *            - row previous to row with real data, in fact this is row with
+     *            columns headers.
+     */
+    private void insertDataToWorkbook(HSSFRow headerRow) {
+        Contact2k3 currentContact;
+        Iterator<Contact2k3> containerModelListIterator = containerModelList.iterator(); 
+        HSSFSheet currentSheet = headerRow.getSheet();
+        HSSFRow currentRow;
+        HSSFCell currentCell;
+        int currentRowIdx = headerRow.getRowNum() + 1;
+        int lastRowIdx = currentSheet.getLastRowNum();
+        int currentColumnIdx; 
+
+
+        if(xlsWorkbook.getNumberOfSheets() == 0 ) {
+            xlsWorkbook.createSheet("ddd");
+        } else {
+            // XXX - there is silent wipe of previous content of the sheet.
+            for(;currentRowIdx <= lastRowIdx; currentRowIdx++) {
+                currentSheet.removeRow(currentSheet.getRow(currentRowIdx));
+            }
+        }
+        
+        for (; containerModelListIterator.hasNext(); currentRowIdx++) {
+            currentContact = containerModelListIterator.next();
+            currentSheet.createRow(currentRowIdx);
+            currentRow = currentSheet.getRow(currentRowIdx);
+            for (String dataFieldKeyName : dataColumnsSequenceMap.keySet()) {
+                currentColumnIdx = dataColumnsSequenceMap
+                        .get(dataFieldKeyName);
+                currentRow.createCell(currentColumnIdx);
+                currentCell = currentRow.getCell(currentColumnIdx);
+                currentCell.setCellType(Cell.CELL_TYPE_STRING);
+                currentCell.setCellValue(currentContact.getFieldValuesMap()
+                                                    .get(dataFieldKeyName));
+            }
         }
     }
 
@@ -445,4 +516,5 @@ public class Contact2k3XlsView extends Contact2k3FileView {
         }
         return cellContent;
     }
+
 }

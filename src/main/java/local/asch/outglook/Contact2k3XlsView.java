@@ -22,6 +22,7 @@ package local.asch.outglook;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -255,10 +256,9 @@ public class Contact2k3XlsView extends Contact2k3FileView {
                             containerFileName.getAbsoluteFile()));
         }
 
-        int choosenSheetIdx = 0 ; //XXX
-        int headerRowIdx = 0 ; //XXX
+        int choosenSheetIdx = 0 ; // zero based
+        int headerRowIdx = 0 ; // zero based
 
-        int idx = xlsWorkbook.getSheetIndex("Sheet1");
         HSSFSheet currentSheet = xlsWorkbook.getSheetAt(choosenSheetIdx);
         return currentSheet.getRow(headerRowIdx);
     }
@@ -281,6 +281,11 @@ public class Contact2k3XlsView extends Contact2k3FileView {
                 xlsWorkbook = new HSSFWorkbook();
                 containerFileStreamOut = new FileOutputStream(containerFileName);
                 xlsWorkbook.write(containerFileStreamOut);
+            }
+
+            if(xlsWorkbook.getNumberOfSheets() == 0 ) {
+                long timeStamp = new Date().getTime();
+                xlsWorkbook.createSheet("ypcnv" + timeStamp);
             }
         } catch (FileNotFoundException e) {
             LOG.error(String.format(ERR_MESSAGE_FILE_ACCESS,
@@ -444,13 +449,9 @@ public class Contact2k3XlsView extends Contact2k3FileView {
         int currentColumnIdx; 
 
 
-        if(xlsWorkbook.getNumberOfSheets() == 0 ) {
-            xlsWorkbook.createSheet("ddd");
-        } else {
-            // XXX - there is silent wipe of previous content of the sheet.
-            for(;currentRowIdx <= lastRowIdx; currentRowIdx++) {
-                currentSheet.removeRow(currentSheet.getRow(currentRowIdx));
-            }
+        // XXX - there is silent wipe of previous content of the sheet.
+        for(;currentRowIdx <= lastRowIdx; currentRowIdx++) {
+            currentSheet.removeRow(currentSheet.getRow(currentRowIdx));
         }
         
         for (; containerModelListIterator.hasNext(); currentRowIdx++) {

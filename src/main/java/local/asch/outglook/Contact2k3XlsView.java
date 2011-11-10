@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,10 +60,11 @@ public class Contact2k3XlsView extends Contact2k3FileView {
     /* Error messages. */
     private static final String ERR_MESSAGE_FILE_ACCESS = "Failed with file '%s'.";
     private static final String ERR_MESSAGE_FILE_SAVE = "Failed with file '%s'.";
+    private static final String ERR_MESSAGE_NO_KEY_IN_MAP = "There is no such a key '%s' in map." ;
     private static final String ERR_MESSAGE_WORKBOOK_WRONG_FORMAT = "Failed with file '%s'.";
     private static final String ERR_MESSAGE_WRONG_FIELD_QUANTITY = "In workbook file '%s' number of data fields in header row does not equals to expected value '%d'.";
     private static final String ERR_MESSAGE_WRONG_FIELD_NAME = "In workbook file '%s' in a row with data fields headers/names found unexpected name '%s'.";
-    private static final String ERR_MESSAGE_NO_KEY_IN_MAP = "There is no such a key '%s' in map." ;
+    private static final String ERR_MESSAGE_NO_HEADER_ROW = "Failed to locate on sheet num. '%d' row number '%d' of cells with data columns headers. Workbook from file '%s'.";
     
     public static final int NUMBER_OF_DATA_FIELDS = 92;
 
@@ -86,7 +88,7 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      * <br>
      */
     private static final Map<String, String> CONTAINER_FIELD_NAMING_MAP = Collections
-            .unmodifiableMap(new HashMap<String, String>() {
+            .unmodifiableMap(new LinkedHashMap<String, String>() {
                 private static final long serialVersionUID = -6949471211802960406L;
 
                 {
@@ -248,21 +250,61 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      * @param workbook
      *            - where to search.
      * @return The row number (zero based).
+     * @throws FileViewException
      */
-    private HSSFRow findHeaderRow(HSSFWorkbook workbook) {
+    private HSSFRow findHeaderRow(HSSFWorkbook workbook)
+            throws FileViewException {
         if (xlsWorkbook.getNumberOfSheets() > 1) {
             LOG.info(String
                     .format("In workbook file '%s' there is more than one worksheet. Will use the first one.",
                             containerFileName.getAbsoluteFile()));
         }
 
-        int choosenSheetIdx = 0 ; // zero based
-        int headerRowIdx = 0 ; // zero based
+        int choosenSheetIdx = 0; // zero based
+        int headerRowIdx = 0; // zero based
 
         HSSFSheet currentSheet = xlsWorkbook.getSheetAt(choosenSheetIdx);
-        return currentSheet.getRow(headerRowIdx);
+
+        if (currentSheet.getPhysicalNumberOfRows() == 0) {
+            createHeaderRow(currentSheet, headerRowIdx);
+        }
+
+        HSSFRow headerRow = currentSheet.getRow(headerRowIdx);
+        if (headerRow == null) {
+            String message = String.format(ERR_MESSAGE_NO_HEADER_ROW,
+                    choosenSheetIdx, headerRowIdx,
+                    containerFileName.getAbsoluteFile());
+            throw new FileViewException(null,
+                    "Contact2k3XlsView.FileViewException()", message);
+        }
+        return headerRow;
     }
     
+    /**
+     * Create in a work sheet row of cells with headers of data columns.
+     * 
+     * @param currentSheet
+     *            - worksheet where to create.
+     * @param headerRowIdx
+     *            - row number where to create, and which may should be created.
+     */
+    private void createHeaderRow(HSSFSheet currentSheet, int headerRowIdx) {
+        HSSFRow headerRow;
+        HSSFCell currentCell;
+        Iterator<String> CONTAINER_FIELD_NAMING_MAP_Iterator = CONTAINER_FIELD_NAMING_MAP
+                                                        .keySet().iterator();
+
+        headerRow = currentSheet.createRow(headerRowIdx);
+        int startColumnIdx = 0 ;
+        for (int currentCellIdx = startColumnIdx;
+                    CONTAINER_FIELD_NAMING_MAP_Iterator.hasNext();
+                    currentCellIdx++) {
+            currentCell = headerRow.createCell(currentCellIdx);
+            currentCell.setCellType(Cell.CELL_TYPE_STRING);
+            currentCell.setCellValue(CONTAINER_FIELD_NAMING_MAP_Iterator.next());
+        }
+    }
+
     /**
      * Obtain workbook object instance.
      * @throws InvalidFormatException
@@ -287,6 +329,7 @@ public class Contact2k3XlsView extends Contact2k3FileView {
                 long timeStamp = new Date().getTime();
                 xlsWorkbook.createSheet("ypcnv" + timeStamp);
             }
+
         } catch (FileNotFoundException e) {
             LOG.error(String.format(ERR_MESSAGE_FILE_ACCESS,
                     containerFileName.getAbsoluteFile()));

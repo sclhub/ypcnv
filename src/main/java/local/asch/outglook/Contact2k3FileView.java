@@ -30,8 +30,10 @@ import java.io.IOException;
 import local.asch.outglook.exceptions.FileViewException;
 
 /**
- * @version 2011-09-14_17-49
- *
+ * @version 2011-09-14_17-49<br>
+ * <br>
+ * @see <a href="http://odftoolkit.org/projects/odfdom">ODF by odfdom</a><br>
+ *      <a href="http://www.jopendocument.org/">ODF by jopendocument</a>
  */
 
 abstract class Contact2k3FileView {

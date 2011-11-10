@@ -25,6 +25,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.System;
 import java.util.ArrayList;
@@ -36,41 +37,50 @@ import local.asch.outglook.exceptions.FileViewException;
 
 
 public class Contact2k3XlsViewTest {
-    private ArrayList<Contact2k3> contactList = new ArrayList<Contact2k3>();
     private File testInputFile = new File("src/test/java/resources/", "contacts2k3.xls");
+    //private File testOutputFile = new File("src/test/java/resources/", "out.xls");
 
     @Test
-    public void test01(){
+    public void testFileExist(){
         assertEquals("EXIST", testInputFile.exists() ? "EXIST" : "NotFound" ) ;
     }
 
     @Test
-    public void test02() throws Contact2k3Exception, IOException,
+    public void testGetView() throws Contact2k3Exception, IOException,
             FileViewException, InvalidFormatException {
+        ArrayList<Contact2k3> contactList = new ArrayList<Contact2k3>();
+        
         System.out.println("===> " + testInputFile.getAbsolutePath());
         Contact2k3XlsView xlsContainer = new Contact2k3XlsView(contactList, testInputFile);
         xlsContainer.getView();
         ArrayList<Contact2k3> obtainedContactList;
         obtainedContactList = xlsContainer.get();
         System.out.println("===> " + obtainedContactList);
-        System.out.println("===> +++++++++++");
     }
 
     @Test
-    public void test03() throws Contact2k3Exception{
+    public void testSetView() throws Contact2k3Exception,
+                                     IOException,
+                                     InvalidFormatException {
 
-//      String fileName = "tmpfile.xls" ;
-//      String filePath =  System.getProperty("java.io.tmpdir")
-//                         + System.getProperty("file.separator");
-//      File tmpFile = new File(filePath,fileName);
-//      Contact2k3XlsView xlsView = new Contact2k3XlsView(aContactList,tmpFile);
-//
-//      // XXX
-//      System.out.println("--->" + xlsView + "|");
-//
-//      System.out.println("--->" + "" + "|");
-        insertFakeData(contactList);
+        ArrayList<Contact2k3> contactList = new ArrayList<Contact2k3>();
         
+        /* Organise source file. */
+        String fileName = "out.xls" ;
+        String filePath =  System.getProperty("java.io.tmpdir")
+                + System.getProperty("file.separator");
+        File tmpFile = new File(filePath,fileName);
+        testFileIsRWAble(tmpFile);
+
+        Contact2k3XlsView xlsContainer = new Contact2k3XlsView(contactList,
+                tmpFile);
+
+        for(int i=0; i<2; i++){
+            contactList.add(new Contact2k3());
+        }
+        insertFakeData(contactList);
+        xlsContainer.set(contactList);
+        xlsContainer.setView();
     }
 
     private void insertFakeData(ArrayList<Contact2k3> contactList)
@@ -82,7 +92,47 @@ public class Contact2k3XlsViewTest {
                 contact.setValue(key, Contact2k3.FIELD_DESCRIPTION_MAP.get(key));
             }
         }
-
+        return ;
     }
+
+    /** Try rw access and file creation. */
+    private void testFileIsRWAble(File targetFile) throws IOException {
+        if (targetFile.isDirectory()) {
+            throw new FileNotFoundException("Output file name '"
+                    + targetFile.getAbsoluteFile()
+                    + "' is a directory. Wait for a file to be here.");
+        }
+        try {
+            boolean existanceFlag = targetFile.exists();;
+            if (!existanceFlag) {
+                targetFile.createNewFile();
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+//            throw new SecurityException(
+//                    "A security manager exists and its"
+//                    + " java.lang.SecurityManager.checkRead(java.lang.String)"
+//                    + "method denies read access to the file or directory"
+//                    + " '" + targetFile.getAbsoluteFile()
+//                    + "'.");
+        } catch (IOException e) {
+            e.printStackTrace();
+//            throw new IOException(
+//                    "I/O error occurred. File is "
+//                    + " '" + targetFile.getAbsoluteFile()
+//                    + "'.");
+        }
+
+        if (!targetFile.isFile()) {
+            throw new FileNotFoundException("File not found. Looked for '"
+                    + targetFile.getAbsoluteFile() + "'.");
+        }
+        if (!targetFile.canWrite()) { // no sence here, file created by user
+                                      // will be writable for the user
+            throw new FileNotFoundException("File '"
+                    + targetFile.getAbsoluteFile() + "' is not writable.");
+        }
+    }
+
     
 }

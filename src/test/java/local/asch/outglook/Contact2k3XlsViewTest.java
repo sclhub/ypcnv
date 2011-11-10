@@ -29,7 +29,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.System;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 
 import local.asch.outglook.exceptions.Contact2k3Exception;
 import local.asch.outglook.exceptions.FileViewException;
@@ -86,14 +89,21 @@ public class Contact2k3XlsViewTest {
 
     private void insertFakeData(ArrayList<Contact2k3> contactList)
             throws Contact2k3Exception {
+        String timeStampString;
         Iterator<Contact2k3> contactListIterator = contactList.iterator();
+
         while (contactListIterator.hasNext()) {
             Contact2k3 contact = contactListIterator.next();
             for (String key : contact.getFieldValuesMap().keySet()) {
+                // long timeStamp = new Date().getTime();
+                Calendar timeStamp = Calendar.getInstance();
+                timeStampString = timeStamp.getDisplayName(Calendar.SECOND,
+                        Calendar.LONG, Locale.getDefault());
+                // ,
                 contact.setValue(key, Contact2k3.FIELD_DESCRIPTION_MAP.get(key));
             }
         }
-        return ;
+        return;
     }
 
     /** Try rw access and file creation. */

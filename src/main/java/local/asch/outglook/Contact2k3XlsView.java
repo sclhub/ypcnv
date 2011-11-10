@@ -376,7 +376,6 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      * @throws IOException
      */
     protected void saveToFile() throws IOException {
-        // TODO - set workbook content from model
         try {
             containerFileStreamOut = new FileOutputStream(containerFileName);
             xlsWorkbook.write(containerFileStreamOut);
@@ -493,8 +492,8 @@ public class Contact2k3XlsView extends Contact2k3FileView {
 
 
         // XXX - there is silent wipe of previous content of the sheet.
-        for(;currentRowIdx <= lastRowIdx; currentRowIdx++) {
-            currentSheet.removeRow(currentSheet.getRow(currentRowIdx));
+        for(int idx = currentRowIdx ;idx <= lastRowIdx; idx++) {
+            currentSheet.removeRow(currentSheet.getRow(idx));
         }
         
         for (; containerModelListIterator.hasNext(); currentRowIdx++) {

@@ -51,7 +51,10 @@ public class Contact2k3 {
 
     private static final String ERR_MESSAGE_NO_KEY_IN_MAP = "There is no such a key '%s' in map.";
 
-    /** Map values are descriptions of fields content. */
+    /**
+     * Mapping of data fields key-names to field's content descriptions. Each
+     * contact have a lot of data fields associated with it.
+     */
     public static final Map<String, String> FIELD_DESCRIPTION_MAP = Collections
             .unmodifiableMap(new HashMap<String, String>() {
                 private static final long serialVersionUID = -1986845664057363787L;
@@ -152,6 +155,14 @@ public class Contact2k3 {
                 }
             });
 
+    /** TODO - Create mapping for data types of the data fields. */
+    @SuppressWarnings("serial")
+    private HashMap<String, String> fieldDataTypesMap = new HashMap<String, String>() {
+        {
+            put("","");
+        }
+    };
+    
     /**
      * There is mapping for values of data fields of a contact being exported
      * from MS-Outlook 2003 or 2007. Fields names are as is in XLS file exported

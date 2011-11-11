@@ -19,8 +19,6 @@
  */
 package local.asch.outglook;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Test;
 
@@ -31,10 +29,9 @@ import java.lang.System;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Locale;
+
 
 import local.asch.outglook.exceptions.Contact2k3Exception;
 import local.asch.outglook.exceptions.FileViewException;
@@ -42,8 +39,8 @@ import local.asch.outglook.exceptions.FileViewException;
 
 
 public class Contact2k3XlsViewTest {
-    private File testInputFile ;//= new File("src/test/java/resources/", "contacts2k3.xls");
-    private File testOutputFile ;//= new File("/tmp/", "out.xls");
+    private File testInputFile ;
+    private File testOutputFile ;
     private String testFilePath ;
     private String testFileName = "out.xls";
 

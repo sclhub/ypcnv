@@ -193,7 +193,6 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      * @param fileNameForUse
      *            - fileNameForUse
      * @throws InvalidFormatException 
-     * @throws IOException
      */
     Contact2k3XlsView(ArrayList<Contact2k3> aContactList,
             File fileNameForUse) throws InvalidFormatException {
@@ -223,7 +222,6 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      * {@inheritDoc}
      * @throws FileViewException 
      * @throws IOException
-     * @see local.asch.outglook.Contact2k3FileView#setView()
      */
     public void setView() throws FileViewException, IOException {
         HSSFRow headerRow = findHeaderRow(xlsWorkbook);
@@ -234,9 +232,7 @@ public class Contact2k3XlsView extends Contact2k3FileView {
 
     /**
      * {@inheritDoc}
-     * 
      * @throws FileViewException
-     * @see local.asch.outglook.Contact2k3FileView#getView()
      */
     public void getView() throws FileViewException {
         HSSFRow headerRow = findHeaderRow(xlsWorkbook);

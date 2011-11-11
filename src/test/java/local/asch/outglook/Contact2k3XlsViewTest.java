@@ -42,8 +42,8 @@ import local.asch.outglook.exceptions.FileViewException;
 
 
 public class Contact2k3XlsViewTest {
-    private File testInputFile = new File("src/test/java/resources/", "contacts2k3.xls");
-    //private File testOutputFile = new File("src/test/java/resources/", "out.xls");
+    //private File testInputFile = new File("src/test/java/resources/", "contacts2k3.xls");
+    private File testInputFile = new File("/tmp/", "out.xls");
 
     @Test
     public void testFileExist(){
@@ -55,12 +55,12 @@ public class Contact2k3XlsViewTest {
             FileViewException, InvalidFormatException {
         ArrayList<Contact2k3> contactList = new ArrayList<Contact2k3>();
         
-        System.out.println("===> " + testInputFile.getAbsolutePath());
+        System.out.println("===> Try: " + testInputFile.getAbsolutePath());
         Contact2k3XlsView xlsContainer = new Contact2k3XlsView(contactList, testInputFile);
         xlsContainer.getView();
         ArrayList<Contact2k3> obtainedContactList;
         obtainedContactList = xlsContainer.get();
-        System.out.println("===> " + obtainedContactList);
+        System.out.println("===> Got: " + obtainedContactList);
     }
 
     @Test

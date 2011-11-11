@@ -28,6 +28,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.System;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,7 +50,7 @@ public class Contact2k3XlsViewTest {
         assertEquals("EXIST", testInputFile.exists() ? "EXIST" : "NotFound" ) ;
     }
 
-    //@Test
+    @Test
     public void testGetView() throws Contact2k3Exception, IOException,
             FileViewException, InvalidFormatException {
         ArrayList<Contact2k3> contactList = new ArrayList<Contact2k3>();
@@ -79,7 +81,7 @@ public class Contact2k3XlsViewTest {
         Contact2k3XlsView xlsContainer = new Contact2k3XlsView(contactList,
                 tmpFile);
 
-        for(int i=0; i<2; i++){
+        for(int i=0; i<5; i++){
             contactList.add(new Contact2k3());
         }
         insertFakeData(contactList);
@@ -89,18 +91,23 @@ public class Contact2k3XlsViewTest {
 
     private void insertFakeData(ArrayList<Contact2k3> contactList)
             throws Contact2k3Exception {
-        String timeStampString;
+
+        DateFormat dateFormat = new SimpleDateFormat("mmss.SS");
+        String timeStampString ;
+
         Iterator<Contact2k3> contactListIterator = contactList.iterator();
 
+        Contact2k3 contact = contactListIterator.next();
+        for (String key : contact.getFieldValuesMap().keySet()) {
+            timeStampString = dateFormat.format(new Date());
+            contact.setValue(key, Contact2k3.FIELD_DESCRIPTION_MAP.get(key));
+        }
+
         while (contactListIterator.hasNext()) {
-            Contact2k3 contact = contactListIterator.next();
+            contact = contactListIterator.next();
             for (String key : contact.getFieldValuesMap().keySet()) {
-                // long timeStamp = new Date().getTime();
-                Calendar timeStamp = Calendar.getInstance();
-                timeStampString = timeStamp.getDisplayName(Calendar.SECOND,
-                        Calendar.LONG, Locale.getDefault());
-                // ,
-                contact.setValue(key, Contact2k3.FIELD_DESCRIPTION_MAP.get(key));
+                timeStampString = dateFormat.format(new Date());
+                contact.setValue(key, timeStampString);
             }
         }
         return;

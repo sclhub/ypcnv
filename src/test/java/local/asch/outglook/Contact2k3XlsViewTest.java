@@ -42,12 +42,47 @@ import local.asch.outglook.exceptions.FileViewException;
 
 
 public class Contact2k3XlsViewTest {
-    //private File testInputFile = new File("src/test/java/resources/", "contacts2k3.xls");
-    private File testInputFile = new File("/tmp/", "out.xls");
+    private File testInputFile ;//= new File("src/test/java/resources/", "contacts2k3.xls");
+    private File testOutputFile ;//= new File("/tmp/", "out.xls");
+    private String testFilePath ;
+    private String testFileName = "out.xls";
+
+    public Contact2k3XlsViewTest() throws IOException {
+
+        testFilePath =  System.getProperty("java.io.tmpdir")
+                + System.getProperty("file.separator");
+
+        testInputFile = new File(testFilePath,testFileName);
+        testOutputFile = new File(testFilePath,testFileName);
+
+        testFileIsRWAble(testInputFile);
+        testFileIsRWAble(testOutputFile);
+        
+    }
+    
+    // @Test
+    // public void testFileExist(){
+    // assertEquals("EXIST", testInputFile.exists() ? "EXIST" : "NotFound" ) ;
+    // }
 
     @Test
-    public void testFileExist(){
-        assertEquals("EXIST", testInputFile.exists() ? "EXIST" : "NotFound" ) ;
+    public void testSetView() throws Contact2k3Exception, IOException,
+            InvalidFormatException, FileViewException {
+
+        ArrayList<Contact2k3> contactList = new ArrayList<Contact2k3>();
+
+        System.out
+                .println("===> Try write: " + testInputFile.getAbsolutePath());
+        Contact2k3XlsView xlsContainer = new Contact2k3XlsView(contactList,
+                testOutputFile);
+        for (int i = 0; i < 5; i++) {
+            contactList.add(new Contact2k3());
+        }
+        insertFakeData(contactList);
+        xlsContainer.set(contactList);
+        xlsContainer.setView();
+        System.out.println("===> Done, try 'libreoffice "
+                + testInputFile.getAbsolutePath() + " &'.");
     }
 
     @Test
@@ -55,38 +90,12 @@ public class Contact2k3XlsViewTest {
             FileViewException, InvalidFormatException {
         ArrayList<Contact2k3> contactList = new ArrayList<Contact2k3>();
         
-        System.out.println("===> Try: " + testInputFile.getAbsolutePath());
+        System.out.println("===> Try read: " + testInputFile.getAbsolutePath());
         Contact2k3XlsView xlsContainer = new Contact2k3XlsView(contactList, testInputFile);
         xlsContainer.getView();
         ArrayList<Contact2k3> obtainedContactList;
         obtainedContactList = xlsContainer.get();
         System.out.println("===> Got: " + obtainedContactList);
-    }
-
-    @Test
-    public void testSetView() throws Contact2k3Exception,
-                                     IOException,
-                                     InvalidFormatException,
-                                     FileViewException {
-
-        ArrayList<Contact2k3> contactList = new ArrayList<Contact2k3>();
-
-        /* Organise source file. */
-        String fileName = "out.xls" ;
-        String filePath =  System.getProperty("java.io.tmpdir")
-                + System.getProperty("file.separator");
-        File tmpFile = new File(filePath,fileName);
-        testFileIsRWAble(tmpFile);
-
-        Contact2k3XlsView xlsContainer = new Contact2k3XlsView(contactList,
-                tmpFile);
-
-        for(int i=0; i<5; i++){
-            contactList.add(new Contact2k3());
-        }
-        insertFakeData(contactList);
-        xlsContainer.set(contactList);
-        xlsContainer.setView();
     }
 
     private void insertFakeData(ArrayList<Contact2k3> contactList)

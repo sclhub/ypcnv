@@ -24,8 +24,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import org.apache.log4j.Logger;
 
 import local.asch.outglook.exceptions.FileViewException;
 
@@ -43,6 +46,15 @@ abstract class Contact2k3FileView {
     protected FileOutputStream containerFileStreamOut = null ;
     protected ArrayList<Contact2k3> containerModelList = null ;
     protected HashMap<String,String> containerFieldNamingMap = null ;
+    /** Have write access. Octal designations. */
+    protected static final int WRITABLE = 02 ;
+    /** Have read access. Octal designations. */
+    protected static final int READABLE = 04 ;
+    /** Have read-write access. Octal designations. */
+    protected static final int RW = 06 ;
+
+    /** Logger. */
+    private static final Logger LOG = Logger.getLogger(Contact2k3FileView.class);
 
     /**
      * @param aContactList - aContactList
@@ -100,5 +112,76 @@ abstract class Contact2k3FileView {
      * @throws IOException 
      */
     abstract protected void saveToFile() throws IOException;
+    
+    /**
+     * Check whether file is accessible.
+     * 
+     * @param accessTypeFlag
+     *            - set it's value to Contact2k3FileView.RO for read only check,<br>
+     *            Contact2k3FileView.RW for read-write access check.
+     * @return <b>true</b> if file is accessible.
+     * @throws FileViewException 
+     */
+    public boolean isAccessible(int accessTypeFlag)
+            throws FileViewException {
+        final String ERR_MESSAGE_IT_IS_DIRECTORY = "The object '%s' is a directory. Waiting it will be a file.";
+        final String ERR_MESSAGE_FILE_NOT_EXIST = "Not found file '%s'.";
+        final String ERR_MESSAGE_FILE_NOT_READABLE = "There is no read access for file '%s'.";
+        final String ERR_MESSAGE_FILE_NOT_WRITABLE = "There is no write access for file '%s'.";
+        final String ERR_MESSAGE_FILE_NOT_RW = "There is no read-write access for file '%s'.";
+        final String ERR_MESSAGE_UNKNOWN_FLAG = "Got uknown flag as parameter to the method.";
+
+        if (containerFileName == null) {
+            throw new NullPointerException(
+                    "File name is void. Does the method called too early?");
+        }
+
+        // File.isFile() is more valuable than File.exist().
+        if (!containerFileName.isFile()) {
+            fileAccessCheckLogHelper(ERR_MESSAGE_FILE_NOT_EXIST,
+                    containerFileName.getAbsoluteFile());
+            return false;
+        }
+
+        switch (accessTypeFlag) {
+        case Contact2k3FileView.READABLE:
+            if (!containerFileName.canRead()) {
+                fileAccessCheckLogHelper(ERR_MESSAGE_FILE_NOT_READABLE,
+                        containerFileName.getAbsoluteFile());
+                return false;
+            }
+            break;
+        case Contact2k3FileView.WRITABLE:
+            if (!containerFileName.canWrite()) {
+                fileAccessCheckLogHelper(ERR_MESSAGE_FILE_NOT_WRITABLE,
+                        containerFileName.getAbsoluteFile());
+                return false;
+            }
+            break;
+        case Contact2k3FileView.RW:
+            if (!containerFileName.canRead() && !containerFileName.canWrite()) {
+                fileAccessCheckLogHelper(ERR_MESSAGE_FILE_NOT_RW,
+                        containerFileName.getAbsoluteFile());
+                return false;
+            }
+            break;
+        default:
+            throw new FileViewException(null, "",
+                        String.format(ERR_MESSAGE_UNKNOWN_FLAG,
+                                      containerFileName.getAbsoluteFile()));
+        }
+
+        if (containerFileName.isDirectory()) {
+            fileAccessCheckLogHelper(ERR_MESSAGE_IT_IS_DIRECTORY,
+                    containerFileName.getAbsoluteFile());
+            return false;
+        }
+
+        return true;
+    }
+
+    private void fileAccessCheckLogHelper(String messageTemplate, File file){
+        LOG.info(String.format(messageTemplate, containerFileName.getAbsoluteFile()));
+    }
 
 }

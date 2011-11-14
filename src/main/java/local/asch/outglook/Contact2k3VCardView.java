@@ -26,19 +26,28 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
-
 import local.asch.outglook.exceptions.FileViewException;
 
 /**
  * @version 2011-11-14_16-27
  */
 public class Contact2k3VCardView extends Contact2k3FileView {
-//    /** Logger. */
-//    private static final Logger LOG = Logger.getLogger(Contact2k3VCardView.class);
+    // /** Logger. */
+    // private static final Logger LOG =
+    // Logger.getLogger(Contact2k3VCardView.class);
+
+    /**
+     * This is list of names for files with vCards.<br>
+     * Contact2k3FileView.containerFileName will be path to vCard files.
+     */
+    private ArrayList<File> vCardFiles = new ArrayList<File>();
+    private VCardEngine vCardEngine = null;
     
-    VCardEngine vcardEngine = null;
-    
+    /*
+     * CompatibilityMode.MS_OUTLOOK
+     * CompatibilityMode.RFC2426
+     */
+
     Contact2k3VCardView(ArrayList<Contact2k3> aContactList, File fileNameForUse) {
         super(aContactList, fileNameForUse);
         // TODO Auto-generated constructor stub
@@ -47,37 +56,37 @@ public class Contact2k3VCardView extends Contact2k3FileView {
     @Override
     public void set(ArrayList<Contact2k3> contactList) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void add(Contact2k3 contact) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void add(ArrayList<Contact2k3> contactList) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setView() throws FileViewException, IOException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void getView() throws FileViewException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     protected void saveToFile() throws IOException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

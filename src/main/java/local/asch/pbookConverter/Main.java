@@ -18,6 +18,10 @@
  *  
  */
 
-/*
-            containerFileName = new File("/home/asergeev/git/ypcnv/misc", "contacts2k3.ods");
-*/
+package local.asch.pbookConverter;
+
+public class Main {
+    public static void main(String[] args) {
+        return ;
+    }
+}

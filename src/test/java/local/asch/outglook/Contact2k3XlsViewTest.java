@@ -19,11 +19,12 @@
  */
 package local.asch.outglook;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.System;
 import java.text.DateFormat;
@@ -45,22 +46,31 @@ public class Contact2k3XlsViewTest {
     private String testFileName = "out.xls";
 
     public Contact2k3XlsViewTest() throws IOException {
-
         testFilePath =  System.getProperty("java.io.tmpdir")
                 + System.getProperty("file.separator");
-
         testInputFile = new File(testFilePath,testFileName);
         testOutputFile = new File(testFilePath,testFileName);
-
-        testFileIsRWAble(testInputFile);
-        testFileIsRWAble(testOutputFile);
-        
     }
-    
-    // @Test
-    // public void testFileExist(){
-    // assertEquals("EXIST", testInputFile.exists() ? "EXIST" : "NotFound" ) ;
-    // }
+
+    @Test
+    public void testFileExist() throws InvalidFormatException,
+            FileViewException {
+
+        ArrayList<Contact2k3> contacts = new ArrayList<Contact2k3>();
+        Contact2k3XlsView xlsContainerSrc = new Contact2k3XlsView(contacts,
+                testInputFile);
+        Contact2k3XlsView xlsContainerDst = new Contact2k3XlsView(contacts,
+                testOutputFile);
+
+        int[] accessFlagsPool = { Contact2k3XlsView.READABLE,
+                Contact2k3XlsView.WRITABLE, Contact2k3XlsView.RW };
+        for (int flag : accessFlagsPool) {
+            assertEquals("ALLOWED",
+                    xlsContainerSrc.isAccessible(flag) ? "ALLOWED" : "Denied" );
+            assertEquals("ALLOWED",
+                    xlsContainerDst.isAccessible(flag) ? "ALLOWED" : "Denied" );
+        }
+    }
 
     @Test
     public void testSetView() throws Contact2k3Exception, IOException,
@@ -95,6 +105,10 @@ public class Contact2k3XlsViewTest {
         System.out.println("===> Got: " + obtainedContactList);
     }
 
+    /**
+     * @param contactList
+     * @throws Contact2k3Exception
+     */
     private void insertFakeData(ArrayList<Contact2k3> contactList)
             throws Contact2k3Exception {
 
@@ -117,51 +131,6 @@ public class Contact2k3XlsViewTest {
             }
         }
         return;
-    }
-
-    /** Try rw access and file creation. */
-    private void testFileIsRWAble(File targetFile) throws IOException {
-        if (targetFile.isDirectory()) {
-            throw new FileNotFoundException("Output file name '"
-                    + targetFile.getAbsoluteFile()
-                    + "' is a directory. Wait for a file to be here.");
-        }
-
-/*
-
-        try {
-            boolean existanceFlag = targetFile.exists();;
-            if (!existanceFlag) {
-                targetFile.createNewFile();
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-//            throw new SecurityException(
-//                    "A security manager exists and its"
-//                    + " java.lang.SecurityManager.checkRead(java.lang.String)"
-//                    + "method denies read access to the file or directory"
-//                    + " '" + targetFile.getAbsoluteFile()
-//                    + "'.");
-        } catch (IOException e) {
-            e.printStackTrace();
-//            throw new IOException(
-//                    "I/O error occurred. File is "
-//                    + " '" + targetFile.getAbsoluteFile()
-//                    + "'.");
-        }
-
-        if (!targetFile.isFile()) {
-            throw new FileNotFoundException("File not found. Looked for '"
-                    + targetFile.getAbsoluteFile() + "'.");
-        }
-        if (!targetFile.canWrite()) { // no sence here, file created by user
-                                      // will be writable for the user
-            throw new FileNotFoundException("File '"
-                    + targetFile.getAbsoluteFile() + "' is not writable.");
-        }
-
-*/
-
     }
 
 }

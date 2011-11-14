@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -112,13 +111,12 @@ abstract class Contact2k3FileView {
      * @throws IOException 
      */
     abstract protected void saveToFile() throws IOException;
-    
+
     /**
      * Check whether file is accessible.
      * 
      * @param accessTypeFlag
-     *            - set it's value to Contact2k3FileView.RO for read only check,<br>
-     *            Contact2k3FileView.RW for read-write access check.
+     *            - set it's value to check read and/or write access.
      * @return <b>true</b> if file is accessible.
      * @throws FileViewException 
      */
@@ -139,6 +137,12 @@ abstract class Contact2k3FileView {
         // File.isFile() is more valuable than File.exist().
         if (!containerFileName.isFile()) {
             fileAccessCheckLogHelper(ERR_MESSAGE_FILE_NOT_EXIST,
+                    containerFileName.getAbsoluteFile());
+            return false;
+        }
+        
+        if (containerFileName.isDirectory()) {
+            fileAccessCheckLogHelper(ERR_MESSAGE_IT_IS_DIRECTORY,
                     containerFileName.getAbsoluteFile());
             return false;
         }
@@ -169,12 +173,6 @@ abstract class Contact2k3FileView {
             throw new FileViewException(null, "",
                         String.format(ERR_MESSAGE_UNKNOWN_FLAG,
                                       containerFileName.getAbsoluteFile()));
-        }
-
-        if (containerFileName.isDirectory()) {
-            fileAccessCheckLogHelper(ERR_MESSAGE_IT_IS_DIRECTORY,
-                    containerFileName.getAbsoluteFile());
-            return false;
         }
 
         return true;

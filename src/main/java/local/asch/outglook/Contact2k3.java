@@ -155,7 +155,7 @@ public class Contact2k3 {
                 }
             });
 
-    /** TODO - Create mapping for data types of the data fields. */
+    /** TODO - Create mapping for data types of the data fields? */
     @SuppressWarnings({ "serial", "unused" })
     private HashMap<String, String> fieldDataTypesMap = new HashMap<String, String>() {
         {

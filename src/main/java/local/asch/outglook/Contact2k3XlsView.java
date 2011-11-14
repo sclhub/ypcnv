@@ -486,7 +486,6 @@ public class Contact2k3XlsView extends Contact2k3FileView {
         int lastRowIdx = currentSheet.getLastRowNum();
         int currentColumnIdx; 
 
-
         // XXX - there is silent wipe of previous content of the sheet.
         for(int idx = currentRowIdx ;idx <= lastRowIdx; idx++) {
             currentSheet.removeRow(currentSheet.getRow(idx));

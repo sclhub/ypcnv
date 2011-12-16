@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mvnBin="mvn"
+mvnBin="/opt/maven/bin/mvn"
 
 "${mvnBin}" install:install-file -Dfile=lib/cardme/cardme-v0.2.6.jar -DgroupId=info.ineighborhood -DartifactId=cardme -Dversion=0.2.6 -Dpackaging=jar
 "${mvnBin}" install:install-file -Dfile=lib/cardme/cardme-src-v0.2.6.jar -DgroupId=info.ineighborhood -DartifactId=cardme-src -Dversion=0.2.6 -Dpackaging=jar

@@ -1,0 +1,21 @@
+
+[indentation]
+indent_width=4
+indent_type=0
+indent_hard_tab_width=8
+detect_indent=false
+indent_mode=2
+
+[project]
+name=YPCnv
+base_path=/home/xfolk/Documents/coding/ypcnv
+make_in_base_path=true
+description=
+run_cmd=/opt/maven/bin/mvn clean install
+
+[files]
+current_page=0
+
+[long line marker]
+long_line_behaviour=1
+long_line_column=72

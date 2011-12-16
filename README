@@ -1,0 +1,32 @@
+/*
+ *  Copyright 2011 ASCH
+ *  
+ *  This file is part of YPCnv.
+ *
+ *  YPCnv is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  YPCnv is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with YPCnv.  If not, see <http://www.gnu.org/licenses/>.
+ *  
+ */
+
+This project name "YPCnv", or "ypcnv", is abbreviation and should be unwraped
+as "Yellow Pages Converter".
+
+This is yet another one more tool to work with phonebook entries. Once I tried
+to deploy my phonebook insdide my new device. I did a try to evacuate contacts
+from MS based hand held device. It was not easy to get my data back from MS
+technology, and I got an idea of this tool, or toolbox. Also the tool is aimed
+to help with batch processing of v-card files, in case when an acceptor device
+did not fully (in an way obvious for a human) support them.
+
+A copy of the GNU General Public License is included in file named COPYING.
+

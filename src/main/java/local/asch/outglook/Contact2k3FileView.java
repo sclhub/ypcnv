@@ -140,7 +140,8 @@ abstract class Contact2k3FileView {
                     containerFileName.getAbsoluteFile());
             return false;
         }
-        
+
+        // XXX Not allways it must be not-a-directory
         if (containerFileName.isDirectory()) {
             fileAccessCheckLogHelper(ERR_MESSAGE_IT_IS_DIRECTORY,
                     containerFileName.getAbsoluteFile());

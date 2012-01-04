@@ -17,7 +17,7 @@
  *  along with YPCnv.  If not, see <http://www.gnu.org/licenses/>.
  *  
  */
-package local.asch.outglook;
+package local.asch.outglook.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,6 +34,8 @@ import java.util.Date;
 import java.util.Iterator;
 
 
+import local.asch.outglook.Contact2k3;
+import local.asch.outglook.Contact2k3XlsView;
 import local.asch.outglook.exceptions.Contact2k3Exception;
 import local.asch.outglook.exceptions.FileViewException;
 

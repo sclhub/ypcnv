@@ -1,4 +1,4 @@
-package local.asch.outglook;
+package local.asch.outglook.test;
 /*
  *  Copyright 2011 ASCH
  *  

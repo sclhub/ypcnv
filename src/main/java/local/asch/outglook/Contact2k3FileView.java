@@ -44,11 +44,11 @@ abstract class Contact2k3FileView {
     protected ArrayList<Contact2k3> containerModelList = null ;
     protected HashMap<String,String> containerFieldNamingMap = null ;
     /** Have write access. Octal designations. */
-    public static final int WRITABLE = 02 ; //XXX
+    protected static final int WRITABLE = 02 ; //XXX
     /** Have read access. Octal designations. */
-    public static final int READABLE = 04 ; //XXX
+    protected static final int READABLE = 04 ; //XXX
     /** Have read-write access. Octal designations. */
-    public static final int RW = 06 ; //XXX
+    protected static final int RW = 06 ; //XXX
 
     /** Logger. */
 //    private static final Logger LOG = Logger.getLogger(Contact2k3FileView.class);

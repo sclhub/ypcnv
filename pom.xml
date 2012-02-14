@@ -47,6 +47,7 @@
     </build>
 
     <dependencies>
+
         <!-- CardMe -->
         <dependency>
             <groupId>info.ineighborhood</groupId>

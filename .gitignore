@@ -1,6 +1,5 @@
 .repository
 target
-target/*
 bin
 *.iml
 *.ipr

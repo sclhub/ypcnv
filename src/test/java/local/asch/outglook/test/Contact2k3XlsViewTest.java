@@ -62,10 +62,10 @@ public class Contact2k3XlsViewTest {
                 testInputFile);
         Contact2k3XlsView xlsContainerDst = new Contact2k3XlsView(contacts,
                 testOutputFile);
-
-        int[] accessFlagsPool = { Contact2k3XlsView.READABLE,
-                Contact2k3XlsView.WRITABLE, Contact2k3XlsView.RW };
-        for (int flag : accessFlagsPool) {
+        
+        Contact2k3XlsView.AccessFlag[] accessFlagsPool = { Contact2k3XlsView.AccessFlag.R,
+                Contact2k3XlsView.AccessFlag.W, Contact2k3XlsView.AccessFlag.RW };
+        for (Contact2k3XlsView.AccessFlag flag : accessFlagsPool) {
             assertEquals("ALLOWED",
                     xlsContainerSrc.isAccessible(flag) ? "ALLOWED" : "Denied" );
             assertEquals("ALLOWED",

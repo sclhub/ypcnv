@@ -36,8 +36,11 @@ import local.asch.outglook.exceptions.FileViewException;
  *      <a href="http://www.jopendocument.org/">ODF by jopendocument</a>
  */
 
-abstract class Contact2k3FileView {
 
+abstract class Contact2k3FileView {
+    public static enum AccessFlag {
+        W,R,RW
+    }
     protected File containerFileName = null ;
     protected FileInputStream containerFileStreamIn = null ;
     protected FileOutputStream containerFileStreamOut = null ;
@@ -118,7 +121,7 @@ abstract class Contact2k3FileView {
      * @return <b>true</b> if file is accessible.
      * @throws FileViewException 
      */
-    public boolean isAccessible(int accessTypeFlag)
+    public boolean isAccessible( Contact2k3FileView.AccessFlag accessTypeFlag)
             throws FileViewException {
         final String ERR_MESSAGE_IT_IS_DIRECTORY = "The object '%s' is a directory. Waiting it will be a file.";
         final String ERR_MESSAGE_FILE_NOT_EXIST = "Not found file '%s'.";
@@ -147,21 +150,21 @@ abstract class Contact2k3FileView {
         }
 
         switch (accessTypeFlag) {
-        case Contact2k3FileView.READABLE:
+        case R:
             if (!containerFileName.canRead()) {
                 fileAccessCheckLogHelper(ERR_MESSAGE_FILE_NOT_READABLE,
                         containerFileName.getAbsoluteFile());
                 return false;
             }
             break;
-        case Contact2k3FileView.WRITABLE:
+        case W:
             if (!containerFileName.canWrite()) {
                 fileAccessCheckLogHelper(ERR_MESSAGE_FILE_NOT_WRITABLE,
                         containerFileName.getAbsoluteFile());
                 return false;
             }
             break;
-        case Contact2k3FileView.RW:
+        case RW:
             if (!containerFileName.canRead() && !containerFileName.canWrite()) {
                 fileAccessCheckLogHelper(ERR_MESSAGE_FILE_NOT_RW,
                         containerFileName.getAbsoluteFile());

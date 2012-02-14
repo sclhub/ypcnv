@@ -28,6 +28,7 @@ import info.ineighborhood.cardme.vcard.features.TitleFeature;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,7 +50,7 @@ public class Contact2k3VCardView extends Contact2k3FileView {
      * This is list of names for files with vCards.<br>
      * Contact2k3FileView.containerFileName will be path to vCard files.
      */
-    private ArrayList<File> vCardFiles = null; //= new ArrayList<File>();
+    private List<File> vCardFiles = null; //= new ArrayList<File>();
     private VCardEngine vCardEngine = null;
     
     /*
@@ -173,7 +174,7 @@ public class Contact2k3VCardView extends Contact2k3FileView {
                     return f.getName().toLowerCase().endsWith(".vcf") || f.isDirectory();
                 }
             });
-            vCardFiles = (ArrayList<File>) Arrays.asList(vcfFiles);
+            vCardFiles = (List<File>) Arrays.asList(vcfFiles);
         } else if(containerFileName.isFile()){
             // TODO use as a single file
             throw new IOException(

@@ -27,8 +27,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
-
 import local.asch.outglook.exceptions.FileViewException;
 
 /**
@@ -46,14 +44,14 @@ abstract class Contact2k3FileView {
     protected ArrayList<Contact2k3> containerModelList = null ;
     protected HashMap<String,String> containerFieldNamingMap = null ;
     /** Have write access. Octal designations. */
-    protected static final int WRITABLE = 02 ;
+    public static final int WRITABLE = 02 ; //XXX
     /** Have read access. Octal designations. */
-    protected static final int READABLE = 04 ;
+    public static final int READABLE = 04 ; //XXX
     /** Have read-write access. Octal designations. */
-    protected static final int RW = 06 ;
+    public static final int RW = 06 ; //XXX
 
     /** Logger. */
-    private static final Logger LOG = Logger.getLogger(Contact2k3FileView.class);
+//    private static final Logger LOG = Logger.getLogger(Contact2k3FileView.class);
 
     /**
      * @param aContactList - aContactList
@@ -180,7 +178,7 @@ abstract class Contact2k3FileView {
     }
 
     private void fileAccessCheckLogHelper(String messageTemplate, File file){
-        LOG.info(String.format(messageTemplate, containerFileName.getAbsoluteFile()));
+//        LOG.info(String.format(messageTemplate, containerFileName.getAbsoluteFile()));
     }
 
 }

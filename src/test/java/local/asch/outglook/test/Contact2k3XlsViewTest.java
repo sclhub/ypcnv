@@ -55,8 +55,7 @@ public class Contact2k3XlsViewTest {
     }
 
     @Test
-    public void testFileExist() throws InvalidFormatException,
-            FileViewException {
+    public void testFileExist() throws FileViewException, InvalidFormatException {
 
         ArrayList<Contact2k3> contacts = new ArrayList<Contact2k3>();
         Contact2k3XlsView xlsContainerSrc = new Contact2k3XlsView(contacts,

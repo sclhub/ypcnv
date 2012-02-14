@@ -20,6 +20,11 @@
 
 package local.asch.outglook;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -27,15 +32,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import local.asch.outglook.exceptions.Contact2k3Exception;
-import local.asch.outglook.exceptions.FileViewException;
-
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -46,6 +42,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+import local.asch.outglook.exceptions.Contact2k3Exception;
+import local.asch.outglook.exceptions.FileViewException;
 
 /**
  * @version 2011-11-08_19-08
@@ -194,7 +193,7 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      *            - fileNameForUse
      * @throws InvalidFormatException 
      */
-    Contact2k3XlsView(ArrayList<Contact2k3> aContactList,
+    public Contact2k3XlsView(ArrayList<Contact2k3> aContactList,
             File fileNameForUse) throws InvalidFormatException {
         super(aContactList, fileNameForUse);
         tryGetWorkbook();

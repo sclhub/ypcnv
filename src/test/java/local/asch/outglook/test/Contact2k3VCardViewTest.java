@@ -38,7 +38,9 @@ public class Contact2k3VCardViewTest {
     public void test01() throws IOException {
         Contact2k3VCardView vcv = new Contact2k3VCardView(aContactList,
                 vCardContainerFileName);
-        vcv.toString();
+        String str = vcv.toString();
+        System.out.println(str);
+        
 
     }
 

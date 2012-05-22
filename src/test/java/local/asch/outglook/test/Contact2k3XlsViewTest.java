@@ -35,9 +35,10 @@ import java.util.Iterator;
 
 
 import local.asch.outglook.Contact2k3;
-import local.asch.outglook.Contact2k3XlsView;
 import local.asch.outglook.exceptions.Contact2k3Exception;
 import local.asch.outglook.exceptions.FileViewException;
+import local.asch.outglook.fileview.AccessFlag;
+import local.asch.outglook.fileview.Contact2k3XlsView;
 
 
 
@@ -63,9 +64,9 @@ public class Contact2k3XlsViewTest {
         Contact2k3XlsView xlsContainerDst = new Contact2k3XlsView(contacts,
                 testOutputFile);
         
-        Contact2k3XlsView.AccessFlag[] accessFlagsPool = { Contact2k3XlsView.AccessFlag.R,
-                Contact2k3XlsView.AccessFlag.W, Contact2k3XlsView.AccessFlag.RW };
-        for (Contact2k3XlsView.AccessFlag flag : accessFlagsPool) {
+        AccessFlag[] accessFlagsPool = { AccessFlag.R,
+                AccessFlag.W, AccessFlag.RW };
+        for (AccessFlag flag : accessFlagsPool) {
             assertEquals("ALLOWED",
                     xlsContainerSrc.isAccessible(flag) ? "ALLOWED" : "Denied" );
             assertEquals("ALLOWED",

@@ -20,140 +20,19 @@
 
 package local.asch.outglook;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 import local.asch.outglook.exceptions.Contact2k3Exception;
 
 /**
  * Model for storage of single contact from MS-Outlook.
  * 
- * Field order is changed inside MS-Office depending on it's localization.
- * English MS-Office 2007 order is used below.
- * 
  * @version 2011-11-08_18-34
  * 
  */
-public class Contact2k3 {
-
-    // XXX
-    /*
-     * ??? static enum fieldDescriptionMap { field1("title","Title"),
-     * field2("firstName","FirstName");
-     * 
-     * private String fieldId; private String fieldName;
-     * 
-     * Field(String fieldId,String fieldName) { this.fieldId=fieldId;
-     * this.fieldName=fieldName; } public String getId() { return fieldId; }
-     * public String getName(){ return fieldName; } };
-     */
+public class Contact2k3 implements Contact2k3Names {
 
     private static final String ERR_MESSAGE_NO_KEY_IN_MAP = "There is no such a key '%s' in map.";
-
-    /**
-     * Mapping of data fields key-names to field's content descriptions. Each
-     * contact have a lot of data fields associated with it.
-     */
-    public static final Map<String, String> FIELD_DESCRIPTION_MAP = Collections
-            .unmodifiableMap(new HashMap<String, String>() {
-                private static final long serialVersionUID = -1986845664057363787L;
-                {
-                    put("title", "Title — this is title - Mr., Mrs., Ms.");
-                    put("firstName", "FirstName");
-                    put("middleName", "MiddleName");
-                    put("lastName", "LastName");
-                    put("suffix", "Suffix");
-                    put("company", "Company");
-                    put("department", "Department");
-                    put("jobTitle", "JobTitle");
-                    put("businessStreet", "BusinessStreet");
-                    put("businessStreet2", "BusinessStreet2");
-                    put("businessStreet3", "BusinessStreet3");
-                    put("businessCity", "BusinessCity");
-                    put("businessState", "BusinessState");
-                    put("businessPostalCode", "BusinessPostalCode");
-                    put("businessCountryRegion", "BusinessCountryRegion");
-                    put("homeStreet", "HomeStreet");
-                    put("homeStreet2", "HomeStreet2");
-                    put("homeStreet3", "HomeStreet3");
-                    put("homeCity", "HomeCity");
-                    put("homeState", "HomeState");
-                    put("homePostalCode", "HomePostalCode");
-                    put("homeCountryRegion", "HomeCountryRegion");
-                    put("otherStreet", "OtherStreet");
-                    put("otherStreet2", "OtherStreet2");
-                    put("otherStreet3", "OtherStreet3");
-                    put("otherCity", "OtherCity");
-                    put("otherState", "OtherState");
-                    put("otherPostalCode", "OtherPostalCode");
-                    put("otherCountryRegion", "OtherCountryRegion");
-                    put("assistantsPhone", "AssistantsPhone");
-                    put("businessFax", "BusinessFax");
-                    put("businessPhone", "BusinessPhone");
-                    put("businessPhone2", "BusinessPhone2");
-                    put("callback", "Callback");
-                    put("carPhone", "CarPhone");
-                    put("companyMainPhone", "CompanyMainPhone");
-                    put("homeFax", "HomeFax");
-                    put("homePhone", "HomePhone");
-                    put("homePhone2", "HomePhone2");
-                    put("iSDN", "ISDN");
-                    put("mobilePhone", "MobilePhone");
-                    put("otherFax", "OtherFax");
-                    put("otherPhone", "OtherPhone");
-                    put("pager", "Pager");
-                    put("primaryPhone", "PrimaryPhone");
-                    put("radioPhone", "RadioPhone");
-                    put("tTYTDDPhone", "TTYTDDPhone");
-                    put("telex", "Telex");
-                    put("account", "Account");
-                    put("anniversary", "Anniversary");
-                    put("assistantsName", "AssistantsName");
-                    put("billingInformation", "BillingInformation");
-                    put("birthday", "Birthday");
-                    put("businessAddressPOBox", "BusinessAddressPOBox");
-                    put("categories", "Categories");
-                    put("children", "Children");
-                    put("directoryServer", "DirectoryServer");
-                    put("emailAddress", "EmailAddress");
-                    put("emailType", "EmailType");
-                    put("emailDisplayName", "EmailDisplayName");
-                    put("email2Address", "Email2Address");
-                    put("email2Type", "Email2Type");
-                    put("email2DisplayName", "Email2DisplayName");
-                    put("email3Address", "Email3Address");
-                    put("email3Type", "Email3Type");
-                    put("email3DisplayName", "Email3DisplayName");
-                    put("gender", "Gender");
-                    put("governmentIDNumber", "GovernmentIDNumber");
-                    put("hobby", "Hobby");
-                    put("homeAddressPOBox", "HomeAddressPOBox");
-                    put("initials", "Initials");
-                    put("internetFreeBusy", "InternetFreeBusy");
-                    put("keywords", "Keywords");
-                    put("language1", "Language1");
-                    put("location", "Location");
-                    put("managersName", "ManagersName");
-                    put("mileage", "Mileage");
-                    put("notes", "Notes");
-                    put("officeLocation", "OfficeLocation");
-                    put("organizationalIDNumber", "OrganizationalIDNumber");
-                    put("otherAddressPOBox", "OtherAddressPOBox");
-                    put("priority", "Priority");
-                    put("privateFlag", "Private");
-                    put("profession", "Profession");
-                    put("referredBy", "ReferredBy");
-                    put("sensitivity", "Sensitivity");
-                    put("spouse", "Spouse");
-                    put("user1", "User1");
-                    put("user2", "User2");
-                    put("user3", "User3");
-                    put("user4", "User4");
-                    put("webPage", "WebPage");
-
-                }
-            });
 
     /** TODO - Create mapping for data types of the data fields? */
     @SuppressWarnings({ "serial", "unused" })
@@ -164,7 +43,7 @@ public class Contact2k3 {
     };
     
     /**
-     * There is mapping for values of data fields of a contact being exported
+     * There is mapping for values of data fields for a contact being exported
      * from MS-Outlook 2003 or 2007. Fields names are as is in XLS file exported
      * from the MS-Office, except collisions with Java key words.
      */
@@ -287,6 +166,9 @@ public class Contact2k3 {
 
     public HashMap<String, String> getFieldValuesMap() {
         return fieldValuesMap;
+    }
+    public Object getFieldValue(Object key) {
+        return fieldValuesMap.get(key);
     }
 
     /**

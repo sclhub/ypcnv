@@ -20,8 +20,63 @@
 
 package local.asch.pbookConverter;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import local.asch.outglook.Contact2k3;
+import local.asch.outglook.exceptions.FileViewException;
+import local.asch.outglook.fileview.Contact2k3VCardView;
+import local.asch.outglook.fileview.Contact2k3XlsView;
+import local.asch.outglook.logger.LoggerHelper;
+
+import org.apache.log4j.Logger;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+
 public class Main {
-    public static void main(String[] args) {
-        return ;
+    /** Logger. */
+    private static final Logger LOG = Logger
+            .getLogger(Main.class);
+
+
+    private static File getOutputDirectory(File candidatePath) {
+        File outputPath = null ;
+        if(candidatePath.isFile()) {
+            outputPath = new File(candidatePath.getParent());
+        }
+        if(candidatePath.isDirectory()) {
+            outputPath = new File(candidatePath.getPath());
+        }
+        return outputPath;
+    }
+    
+    public Main(){
+        //BasicConfigurator.configure();
+        //PropertyConfigurator.configure(LOGGER_CONFIGURATION_FILE);
+        LoggerHelper.initLogger(LOG);
+    }
+    
+    public static void main(String[] args) throws FileViewException, IOException {
+        //"/home/and/ASCH/coding/ypcnv/misc/phonebook/Q6-phonebook_2010-12-24.xls"
+        if(args.length < 1) {
+            throw new IllegalArgumentException("Command line argument can not be void, must be a file name.");
+        }
+        File inputFile = new File(args[0]);
+        File outputPath = getOutputDirectory(inputFile);
+        
+        ArrayList<Contact2k3> contactList = new ArrayList<Contact2k3>();
+        Contact2k3XlsView xlsView = null ;
+        Contact2k3VCardView vCardView = new Contact2k3VCardView(contactList, outputPath);
+        
+        try {
+            xlsView = new Contact2k3XlsView(contactList, inputFile);
+        } catch (InvalidFormatException e) {
+            LOG.error("Invalid format of input file.");
+            e.printStackTrace();
+            return ;
+        }
+        
+        xlsView.getView();
+        vCardView.setView();
     }
 }

@@ -15,7 +15,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with YPCnv.  If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  */
 package local.asch.outglook.test;
 
@@ -23,25 +23,53 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import local.asch.outglook.Contact2k3;
+import local.asch.outglook.exceptions.Contact2k3Exception;
+import local.asch.outglook.exceptions.FileViewException;
+import local.asch.outglook.fileview.Contact2k3VCardView;
+
 import org.junit.Test;
 
-import local.asch.outglook.Contact2k3;
-import local.asch.outglook.Contact2k3VCardView;
-
-
+/**
+ * @version 2012-02-16_20-40
+ */
 
 public class Contact2k3VCardViewTest {
+
+//    /** Logger. */
+//    private static final Logger LOG = Logger
+//            .getLogger(Contact2k3VCardViewTest.class);
+    
     private File vCardContainerFileName = new File("src/test/java/resources/vcards/");
-    private ArrayList<Contact2k3> aContactList;
+    private File outPutDir = new File("/tmp/123");
+    private ArrayList<Contact2k3> aContactList = new ArrayList<Contact2k3>();
 
     @Test
-    public void test01() throws IOException {
+    public void testGetView() throws IOException, FileViewException {
         Contact2k3VCardView vcv = new Contact2k3VCardView(aContactList,
                 vCardContainerFileName);
-        String str = vcv.toString();
-        System.out.println(str);
-        
+        vcv.getView();
+    }
 
+    @Test
+    public void testSetView() throws IOException, FileViewException {
+        
+        aContactList.add(new Contact2k3());
+        try {
+            aContactList.get(0).setValue("firstName", "Wall-Street");
+            aContactList.get(0).setValue("middleName", "Panic");
+            aContactList.get(0).setValue("lastName", "Snopes");
+            aContactList.get(0).setValue("title", "Mr.");
+            aContactList.get(0).setValue("birthday", "09.05.2008");
+            aContactList.get(0).setValue("webPage", "http://www.ubuntu.com");
+        } catch (Contact2k3Exception e) {
+            e.printStackTrace();
+        }
+
+        Contact2k3VCardView vcv = new Contact2k3VCardView(aContactList,
+                outPutDir);
+        vcv.setView();
+        System.out.println("See files in '" + outPutDir + "'.");
     }
 
 }

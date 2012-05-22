@@ -18,7 +18,7 @@
  *  
  */
 
-package local.asch.outglook;
+package local.asch.outglook.fileview;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,12 +26,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+
+import local.asch.outglook.Contact2k3;
+import local.asch.outglook.exceptions.Contact2k3Exception;
+import local.asch.outglook.exceptions.FileViewException;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -41,17 +42,16 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-
-import local.asch.outglook.exceptions.Contact2k3Exception;
-import local.asch.outglook.exceptions.FileViewException;
 
 /**
  * @version 2011-11-08_19-08
  * 
  */
 
-public class Contact2k3XlsView extends Contact2k3FileView {
+public class Contact2k3XlsView extends Contact2k3FileView
+                               implements Contact2k3XlsViewNames {
 
     /** Logger. */
     private static final Logger LOG = Logger.getLogger(Contact2k3XlsView.class);
@@ -78,113 +78,6 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      * values) in work sheet.
      */
     private HashMap<String, Integer> dataColumnsSequenceMap = new HashMap<String, Integer>();
-
-    /**
-     * Mapping of the model fields names to container's fields names. <b>Key</b>
-     * - container's field name as it was set by MS-Outlook inside XLS contacts
-     * container's in header row,<br>
-     * <b>value</b> - model's class field name.<br>
-     * <br>
-     */
-    private static final Map<String, String> CONTAINER_FIELD_NAMING_MAP = Collections
-            .unmodifiableMap(new LinkedHashMap<String, String>() {
-                private static final long serialVersionUID = -6949471211802960406L;
-
-                {
-                    put("Title", "title");
-                    put("FirstName", "firstName");
-                    put("MiddleName", "middleName");
-                    put("LastName", "lastName");
-                    put("Suffix", "suffix");
-                    put("Company", "company");
-                    put("Department", "department");
-                    put("JobTitle", "jobTitle");
-                    put("BusinessStreet", "businessStreet");
-                    put("BusinessStreet2", "businessStreet2");
-                    put("BusinessStreet3", "businessStreet3");
-                    put("BusinessCity", "businessCity");
-                    put("BusinessState", "businessState");
-                    put("BusinessPostalCode", "businessPostalCode");
-                    put("BusinessCountryRegion", "businessCountryRegion");
-                    put("HomeStreet", "homeStreet");
-                    put("HomeStreet2", "homeStreet2");
-                    put("HomeStreet3", "homeStreet3");
-                    put("HomeCity", "homeCity");
-                    put("HomeState", "homeState");
-                    put("HomePostalCode", "homePostalCode");
-                    put("HomeCountryRegion", "homeCountryRegion");
-                    put("OtherStreet", "otherStreet");
-                    put("OtherStreet2", "otherStreet2");
-                    put("OtherStreet3", "otherStreet3");
-                    put("OtherCity", "otherCity");
-                    put("OtherState", "otherState");
-                    put("OtherPostalCode", "otherPostalCode");
-                    put("OtherCountryRegion", "otherCountryRegion");
-                    put("AssistantsPhone", "assistantsPhone");
-                    put("BusinessFax", "businessFax");
-                    put("BusinessPhone", "businessPhone");
-                    put("BusinessPhone2", "businessPhone2");
-                    put("Callback", "callback");
-                    put("CarPhone", "carPhone");
-                    put("CompanyMainPhone", "companyMainPhone");
-                    put("HomeFax", "homeFax");
-                    put("HomePhone", "homePhone");
-                    put("HomePhone2", "homePhone2");
-                    put("ISDN", "iSDN");
-                    put("MobilePhone", "mobilePhone");
-                    put("OtherFax", "otherFax");
-                    put("OtherPhone", "otherPhone");
-                    put("Pager", "pager");
-                    put("PrimaryPhone", "primaryPhone");
-                    put("RadioPhone", "radioPhone");
-                    put("TTYTDDPhone", "tTYTDDPhone");
-                    put("Telex", "telex");
-                    put("Account", "account");
-                    put("Anniversary", "anniversary");
-                    put("AssistantsName", "assistantsName");
-                    put("BillingInformation", "billingInformation");
-                    put("Birthday", "birthday");
-                    put("BusinessAddressPOBox", "businessAddressPOBox");
-                    put("Categories", "categories");
-                    put("Children", "children");
-                    put("DirectoryServer", "directoryServer");
-                    put("EmailAddress", "emailAddress");
-                    put("EmailType", "emailType");
-                    put("EmailDisplayName", "emailDisplayName");
-                    put("Email2Address", "email2Address");
-                    put("Email2Type", "email2Type");
-                    put("Email2DisplayName", "email2DisplayName");
-                    put("Email3Address", "email3Address");
-                    put("Email3Type", "email3Type");
-                    put("Email3DisplayName", "email3DisplayName");
-                    put("Gender", "gender");
-                    put("GovernmentIDNumber", "governmentIDNumber");
-                    put("Hobby", "hobby");
-                    put("HomeAddressPOBox", "homeAddressPOBox");
-                    put("Initials", "initials");
-                    put("InternetFreeBusy", "internetFreeBusy");
-                    put("Keywords", "keywords");
-                    put("Language1", "language1");
-                    put("Location", "location");
-                    put("ManagersName", "managersName");
-                    put("Mileage", "mileage");
-                    put("Notes", "notes");
-                    put("OfficeLocation", "officeLocation");
-                    put("OrganizationalIDNumber", "organizationalIDNumber");
-                    put("OtherAddressPOBox", "otherAddressPOBox");
-                    put("Priority", "priority");
-                    put("Private", "privateFlag");
-                    put("Profession", "profession");
-                    put("ReferredBy", "referredBy");
-                    put("Sensitivity", "sensitivity");
-                    put("Spouse", "spouse");
-                    put("User1", "user1");
-                    put("User2", "user2");
-                    put("User3", "user3");
-                    put("User4", "user4");
-                    put("WebPage", "webPage");
-                }
-            });
 
     /**
      * @param aContactList
@@ -306,6 +199,7 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      */
     private void tryGetWorkbook() throws InvalidFormatException {
         if (xlsWorkbook != null) {
+            //xlsWorkbook.setMissingCellPolicy(Row.CREATE_NULL_AS_BLANK);
             return;
         }
 
@@ -324,6 +218,7 @@ public class Contact2k3XlsView extends Contact2k3FileView {
                 long timeStamp = new Date().getTime();
                 xlsWorkbook.createSheet("ypcnv" + timeStamp);
             }
+            //xlsWorkbook.setMissingCellPolicy(Row.CREATE_NULL_AS_BLANK);
 
         } catch (FileNotFoundException e) {
             LOG.error(String.format(ERR_MESSAGE_FILE_ACCESS,
@@ -334,10 +229,6 @@ public class Contact2k3XlsView extends Contact2k3FileView {
                     containerFileName.getAbsoluteFile()));
             e.printStackTrace();
         } catch (InvalidFormatException e) {
-            
-            System.out.println(String.format(ERR_MESSAGE_WORKBOOK_WRONG_FORMAT,
-                    containerFileName.getAbsoluteFile()));
-            
             LOG.error(String.format(ERR_MESSAGE_WORKBOOK_WRONG_FORMAT,
                     containerFileName.getAbsoluteFile()));
             e.printStackTrace();
@@ -423,10 +314,34 @@ public class Contact2k3XlsView extends Contact2k3FileView {
         for (int idx = startColumnIdx; idx <= stopColumnIdx; idx++) {
             HSSFCell currentCell = headerRow.getCell(idx);
             String xlsFieldName = currentCell.getStringCellValue();
-            String dataFieldKeyName = CONTAINER_FIELD_NAMING_MAP
+            String modelDataFieldName = null;
+            
+            modelDataFieldName = CONTAINER_FIELD_NAMING_MAP
                     .get(xlsFieldName);
-            if (dataFieldKeyName != null) {
-                dataColumnsSequenceMap.put(dataFieldKeyName, idx);
+
+            if(modelDataFieldName == null) {
+                ArrayList<String> foreignNamesSearchResultList = new ArrayList<String>();
+
+                /*
+                 * Add one by one mappings of other localizations, or add
+                 * explicit locality flag support.
+                 */
+                foreignNamesSearchResultList
+                    .add(CONTAINER_FIELD_NAMING_MAP_RUS2ENGL.get(xlsFieldName));
+                
+                Iterator<String> namesWereFoundListIterator
+                                    = foreignNamesSearchResultList.iterator();
+                while(namesWereFoundListIterator.hasNext()) {
+                    String foundForeignName = namesWereFoundListIterator.next();
+                    if(foundForeignName != null) {
+                        modelDataFieldName = CONTAINER_FIELD_NAMING_MAP
+                                .get(foundForeignName);
+                    }
+                }
+            }
+            
+            if (modelDataFieldName != null) {
+                dataColumnsSequenceMap.put(modelDataFieldName, idx);
             } else {
                 String message = String.format(ERR_MESSAGE_WRONG_FIELD_NAME,
                         containerFileName.getAbsoluteFile(), xlsFieldName);
@@ -450,12 +365,25 @@ public class Contact2k3XlsView extends Contact2k3FileView {
         int currentRowIdx = headerRow.getRowNum() + 1;
         for (; currentRowIdx <= lastRowIdx; currentRowIdx++) {
             Contact2k3 currentContact = new Contact2k3();
-
+            Boolean isVoidContact = true ;
             for (String dataFieldKeyName : currentContact.getFieldValuesMap()
                     .keySet()) {
                 int cellIdx = dataColumnsSequenceMap.get(dataFieldKeyName);
-                String cellValue = getCellContent(currentSheet.getRow(
-                        currentRowIdx).getCell(cellIdx));
+
+                HSSFCell cell = currentSheet
+                                        .getRow(currentRowIdx)
+                                        .getCell(cellIdx, Row.CREATE_NULL_AS_BLANK);
+                
+                String cellValue = null;
+                if(cell != null) {
+                    cellValue = getCellContent(cell);
+                } else {
+                    cellValue = "";
+                }
+                if(! cellValue.equals("")) {
+                    isVoidContact = false ;
+                }
+
                 try {
                     currentContact.setValue(dataFieldKeyName, cellValue);
                 } catch (Contact2k3Exception e) {
@@ -464,7 +392,9 @@ public class Contact2k3XlsView extends Contact2k3FileView {
                     e.printStackTrace();
                 }
             }
-            containerModelList.add(currentContact);
+            if(! isVoidContact) {
+                containerModelList.add(currentContact);
+            }
         }
     }
 
@@ -514,11 +444,14 @@ public class Contact2k3XlsView extends Contact2k3FileView {
      * @return Cell's content.
      */
     private String getCellContent(HSSFCell cell) {
+
         int foundCellType = cell.getCellType();
         String cellContent = null;
 
         switch (foundCellType) {
         case Cell.CELL_TYPE_STRING:
+            cellContent = cell.getStringCellValue();
+            break;
         case Cell.CELL_TYPE_FORMULA:
             cellContent = cell.getStringCellValue();
             break;

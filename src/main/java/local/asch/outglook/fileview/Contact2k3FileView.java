@@ -18,16 +18,20 @@
  *  
  */
 
-package local.asch.outglook;
+package local.asch.outglook.fileview;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
+import org.apache.log4j.Logger;
+
+import local.asch.outglook.Contact2k3;
 import local.asch.outglook.exceptions.FileViewException;
+import local.asch.outglook.logger.LoggerHelper;
 
 /**
  * @version 2011-09-14_17-49<br>
@@ -38,24 +42,18 @@ import local.asch.outglook.exceptions.FileViewException;
 
 
 abstract class Contact2k3FileView {
-    public static enum AccessFlag {
-        W,R,RW
-    }
+
     protected File containerFileName = null ;
     protected FileInputStream containerFileStreamIn = null ;
     protected FileOutputStream containerFileStreamOut = null ;
     protected ArrayList<Contact2k3> containerModelList = null ;
     protected HashMap<String,String> containerFieldNamingMap = null ;
-    /** Have write access. Octal designations. */
-    protected static final int WRITABLE = 02 ; //XXX
-    /** Have read access. Octal designations. */
-    protected static final int READABLE = 04 ; //XXX
-    /** Have read-write access. Octal designations. */
-    protected static final int RW = 06 ; //XXX
 
     /** Logger. */
-//    private static final Logger LOG = Logger.getLogger(Contact2k3FileView.class);
+    private static final Logger LOG = Logger
+            .getLogger(Contact2k3FileView.class);
 
+    
     /**
      * @param aContactList - aContactList
      * @param fileNameForUse - fileNameForUse
@@ -65,6 +63,9 @@ abstract class Contact2k3FileView {
         containerFileName = fileNameForUse ;
         containerModelList = aContactList ;
         containerFieldNamingMap = new HashMap<String,String>() ;
+        //BasicConfigurator.configure();
+        //PropertyConfigurator.configure(LOGGER_CONFIGURATION_FILE);
+        LoggerHelper.initLogger(LOG);
     }
 
     /**
@@ -104,14 +105,15 @@ abstract class Contact2k3FileView {
      * This should get data from the "view" and put it into the "model".
      * 
      * @throws FileViewException
+     * @throws IOException 
      */
-    abstract public void getView() throws FileViewException;
+    abstract public void getView() throws FileViewException, IOException;
 
     /**
      * Write down to file.
      * @throws IOException 
      */
-    abstract protected void saveToFile() throws IOException;
+    abstract protected void saveToFile() throws IOException; // Should it be "saveToFile(Object object)"?
 
     /**
      * Check whether file is accessible.
@@ -121,7 +123,7 @@ abstract class Contact2k3FileView {
      * @return <b>true</b> if file is accessible.
      * @throws FileViewException 
      */
-    public boolean isAccessible( Contact2k3FileView.AccessFlag accessTypeFlag)
+    public boolean isAccessible( AccessFlag accessTypeFlag)
             throws FileViewException {
         final String ERR_MESSAGE_IT_IS_DIRECTORY = "The object '%s' is a directory. Waiting it will be a file.";
         final String ERR_MESSAGE_FILE_NOT_EXIST = "Not found file '%s'.";
@@ -135,14 +137,13 @@ abstract class Contact2k3FileView {
                     "File name is void. Does the method called too early?");
         }
 
-        // File.isFile() is more valuable than File.exist().
         if (!containerFileName.isFile()) {
             fileAccessCheckLogHelper(ERR_MESSAGE_FILE_NOT_EXIST,
                     containerFileName.getAbsoluteFile());
             return false;
         }
 
-        // XXX Not allways it must be not-a-directory
+        // XXX - Not allways it must be not-a-directory.
         if (containerFileName.isDirectory()) {
             fileAccessCheckLogHelper(ERR_MESSAGE_IT_IS_DIRECTORY,
                     containerFileName.getAbsoluteFile());
@@ -181,7 +182,7 @@ abstract class Contact2k3FileView {
     }
 
     private void fileAccessCheckLogHelper(String messageTemplate, File file){
-//        LOG.info(String.format(messageTemplate, containerFileName.getAbsoluteFile()));
+        LOG.info(String.format(messageTemplate, containerFileName.getAbsoluteFile()));
     }
 
 }

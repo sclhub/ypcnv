@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011 ASCH
+ *  Copyright 2011-2012 ASCH
  *  
  *  This file is part of YPCnv.
  *
@@ -74,5 +74,7 @@ public class Main {
         
         xlsView.getView();
         vCardView.setView();
+        
+        System.out.println("See file/files in '" + vCardView.getViewContainerName() + "'.");
     }
 }

@@ -115,6 +115,10 @@ abstract class Contact2k3FileView {
      */
     abstract protected void saveToFile() throws IOException; // Should it be "saveToFile(Object object)"?
 
+    public File getViewContainerName() {
+        return containerFileName;
+    }
+    
     /**
      * Check whether file is accessible.
      * 

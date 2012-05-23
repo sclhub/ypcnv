@@ -114,6 +114,7 @@ public class Contact2k3VCardView extends Contact2k3FileView
      * Contact2k3FileView.containerFileName will be path to vCard files.
      */
     private List<File> vCardFiles = null; // = new ArrayList<File>();
+    private File outDirUUIDAsString = null;
     private VCardEngine vCardEngine = null;
     private VCardWriter vCardWriter = new VCardWriter();
 
@@ -136,6 +137,11 @@ public class Contact2k3VCardView extends Contact2k3FileView
             File fileNameForUse) throws IOException {
         super(aContactList, fileNameForUse);
         LoggerHelper.initLogger(LOG);
+
+        Calendar timestamp = Calendar.getInstance();
+        outDirUUIDAsString = new File(String.format(
+                "%1$tY-%1$tm-%1$te_%1$tH%1$tM_%1$tS-%1$tL", timestamp));
+
         if (containerFileName.isDirectory()) { // TODO - Try to obtain all vCard.
                                                // file
             File[] vcfFiles = containerFileName
@@ -332,6 +338,10 @@ public class Contact2k3VCardView extends Contact2k3FileView
         saveToFile();
     }
 
+    public File getViewContainerName() {
+        return new File(containerFileName + File.separator + outDirUUIDAsString);
+    }
+
     @Override
     public void getView() throws FileViewException {
         for ( File aVCF : vCardFiles ) {
@@ -366,12 +376,7 @@ public class Contact2k3VCardView extends Contact2k3FileView
 			throws FileViewException {
 		Long outNameId = new Long(0);
 
-		Calendar timestamp = Calendar.getInstance();
-
-		String outDirUUIDAsString = String.format(
-				"%1$tY-%1$tm-%1$te_%1$tH%1$tM_%1$tS-%1$tL", timestamp);
-		File outDir = new File(containerFileName.getPath() + File.separator
-				+ outDirUUIDAsString);
+		File outDir = new File(containerFileName.getPath() + File.separator + outDirUUIDAsString);
 		if (!outDir.exists()) {
 			if (!outDir.mkdirs()) {
 				String message = String.format(

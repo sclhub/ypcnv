@@ -27,6 +27,8 @@ import org.apache.log4j.PatternLayout;
 
 public class LoggerHelper {
 
+    private static final String CONSOLE_LOG_APPENDER_NAME = "singleMiscLoggerForConsole" ;
+
 	public static void initLogger() {
 		Logger Log = Logger.getRootLogger();
         if(!Log.getAllAppenders().hasMoreElements()) {
@@ -38,10 +40,15 @@ public class LoggerHelper {
 	}
 
 	public static void initLogger(Logger log) {
-    	log.setLevel(Level.INFO);
-    	ConsoleAppender ca = new ConsoleAppender(new PatternLayout("%d{ISO8601} [%5p %c{1}:%L] %m%n"));
-    	ca.setTarget("System.out");
-    	log.addAppender(ca);
+        ConsoleAppender ca = new ConsoleAppender(new PatternLayout("%d{ISO8601} [%5p %c{1}:%L] %m%n"));
+        ca.setName(CONSOLE_LOG_APPENDER_NAME);
+        //ca.setTarget("System.out");
+        ca.setTarget("System.err");
+        if( log.getAppender(ca.getName()) == null ) {
+            log.setLevel(Level.INFO);
+            //log.setAdditivity(new Boolean("false"));
+            log.addAppender(ca);
+        }
 	}
 
 }

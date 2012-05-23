@@ -96,18 +96,36 @@ public class Contact2k3XlsView extends Contact2k3FileView
      * {@inheritDoc}
      */
     public void set(ArrayList<Contact2k3> contactList) {
+        containerModelList = contactList ;
+        try {
+
+            setView();
+
+        } catch (FileViewException e) {
+            String errorMessage= new String("Failed while replacing model"
+                    + "object in file view.");
+            LOG.error(errorMessage);
+            e.printStackTrace();
+        } catch (IOException e) {
+            String errorMessage= new String("Failed while replacing model"
+                    + "object in file view.");
+            LOG.error(errorMessage);
+            e.printStackTrace();
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public void add(Contact2k3 contact) {
+        containerModelList.add(contact);
     }
 
     /**
      * {@inheritDoc}
      */
     public void add(ArrayList<Contact2k3> contactList) {
+        containerModelList.addAll(contactList);
     }
 
     /**

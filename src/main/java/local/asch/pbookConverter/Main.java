@@ -38,7 +38,6 @@ public class Main {
     private static final Logger LOG = Logger
             .getLogger(Main.class);
 
-
     private static File getOutputDirectory(File candidatePath) {
         File outputPath = null ;
         if(candidatePath.isFile()) {
@@ -51,13 +50,10 @@ public class Main {
     }
     
     public Main(){
-        //BasicConfigurator.configure();
-        //PropertyConfigurator.configure(LOGGER_CONFIGURATION_FILE);
         LoggerHelper.initLogger(LOG);
     }
     
     public static void main(String[] args) throws FileViewException, IOException {
-        //"/home/and/ASCH/coding/ypcnv/misc/phonebook/Q6-phonebook_2010-12-24.xls"
         if(args.length < 1) {
             throw new IllegalArgumentException("Command line argument can not be void, must be a file name.");
         }

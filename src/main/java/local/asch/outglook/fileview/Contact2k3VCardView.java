@@ -227,7 +227,9 @@ public class Contact2k3VCardView extends Contact2k3FileView
     public void set(ArrayList<Contact2k3> contactList) {
         containerModelList = contactList ;
         try {
+
             setView();
+
         } catch (FileViewException e) {
             String errorMessage= new String("Failed while replacing model"
             		+ "object in file view.");
@@ -249,7 +251,6 @@ public class Contact2k3VCardView extends Contact2k3FileView
     @Override
     public void add(ArrayList<Contact2k3> contactList) {
         containerModelList.addAll(contactList);
-
     }
 
     @Override

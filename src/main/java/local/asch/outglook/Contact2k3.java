@@ -21,6 +21,7 @@
 package local.asch.outglook;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import local.asch.outglook.exceptions.Contact2k3Exception;
 
@@ -181,6 +182,32 @@ public class Contact2k3 implements Contact2k3Names {
     @Override
     public String toString() {
         return "Contact2k3 [fieldValuesMap=" + fieldValuesMap + "]";
+    }
+    
+    public String toStringWithoutEmptyFields() {
+        StringBuilder fieldValuesMapString = new StringBuilder();
+        final String IN_STRING_DELIMETER = ", " ;
+
+        Iterator<String> fieldValuesMapKeySetIterator = fieldValuesMap.keySet().iterator();
+        while(fieldValuesMapKeySetIterator.hasNext()) {
+            String key = fieldValuesMapKeySetIterator.next() ;
+            String value=fieldValuesMap.get(key);
+
+            if(!value.isEmpty()) {
+                fieldValuesMapString.append(key + "=" + value + IN_STRING_DELIMETER);
+            }
+
+        }
+        
+        Integer trailingDelimeterStartIndex = fieldValuesMapString.lastIndexOf(", ", 
+                fieldValuesMapString.length()-IN_STRING_DELIMETER.length()+1);
+        if(trailingDelimeterStartIndex > 0) {
+        fieldValuesMapString.delete(trailingDelimeterStartIndex,
+                trailingDelimeterStartIndex + IN_STRING_DELIMETER.length());
+        }
+        fieldValuesMapString.insert(0, "{");
+        fieldValuesMapString.append("}");
+        return "Contact2k3 [fieldValuesMap=" + fieldValuesMapString + "]";
     }
 
 }

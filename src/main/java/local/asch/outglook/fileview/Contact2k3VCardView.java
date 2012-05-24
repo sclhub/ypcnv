@@ -326,9 +326,9 @@ public class Contact2k3VCardView extends Contact2k3FileView
             vCard.setDisplayableNameFeature(displayableName);
 
             //new VCardSamsungHelper();
-            if(! new VCardSamsungHelper().checkAndFixGTC3322Compatibility(vCard)) {
+            if(! VCardSamsungHelper.checkAndFixGTC3322Compatibility(vCard)) {
                 String warningMessage = "Warning token: "
-                                                + contactCurrent.toString();
+                                + contactCurrent.toStringWithoutEmptyFields();
                 LOG.info(warningMessage);
             }
 

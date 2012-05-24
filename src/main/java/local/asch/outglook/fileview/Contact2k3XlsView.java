@@ -33,6 +33,7 @@ import java.util.Iterator;
 import local.asch.outglook.Contact2k3;
 import local.asch.outglook.exceptions.Contact2k3Exception;
 import local.asch.outglook.exceptions.FileViewException;
+import local.asch.outglook.logger.LoggerHelper;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -79,6 +80,9 @@ public class Contact2k3XlsView extends Contact2k3FileView
      */
     private HashMap<String, Integer> dataColumnsSequenceMap = new HashMap<String, Integer>();
 
+    static {
+        LoggerHelper.initLogger(LOG);
+    }
     /**
      * @param aContactList
      *            - aContactList
@@ -388,9 +392,10 @@ public class Contact2k3XlsView extends Contact2k3FileView
                     .keySet()) {
                 int cellIdx = dataColumnsSequenceMap.get(dataFieldKeyName);
 
+                
                 HSSFCell cell = currentSheet
-                                        .getRow(currentRowIdx)
-                                        .getCell(cellIdx, Row.CREATE_NULL_AS_BLANK);
+                        .getRow(currentRowIdx)
+                        .getCell(cellIdx, Row.RETURN_BLANK_AS_NULL);
                 
                 String cellValue = null;
                 if(cell != null) {

@@ -75,6 +75,6 @@ public class Main {
         xlsView.getView();
         vCardView.setView();
         
-        System.out.println("See file/files in '" + vCardView.getViewContainerName() + "'.");
+        System.out.println("\nSee file/files in '" + vCardView.getViewContainerName() + "'.");
     }
 }

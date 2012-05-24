@@ -62,10 +62,10 @@ public class VCardSamsungHelper {
         return outputBuilder.toString();
     }
 
-    public Boolean checkAndFixGTC3322Compatibility(VCard vCard) {
+    public static Boolean checkAndFixGTC3322Compatibility(VCard vCard) {
         Boolean isSamsungCompatible = true ;
 
-        if (!this.validateAddressQuantity(vCard,
+        if (!validateAddressQuantity(vCard,
                 VCardSamsungHelperMetaData.MAX_ADDR_QUANTITY_GT_C3322)) {
             isSamsungCompatible = false ;
             String warningMessage = "Quantity of addresses for '"
@@ -74,7 +74,7 @@ public class VCardSamsungHelper {
             LOG.info(warningMessage);
         }
 
-        if (!this.validateScreenNamesArePresent(vCard)) {
+        if (!validateScreenNamesArePresent(vCard)) {
             isSamsungCompatible = false ;
             String stubName = new String("empty name");
             String nameSubstitution = null ;
@@ -112,7 +112,7 @@ public class VCardSamsungHelper {
      *            - maximum quantity.
      * @return True if real quantity is not greater than specified maximum.
      */
-    private Boolean validateAddressQuantity(VCard vCard, Integer maxQantityOfAddresses) {
+    private static Boolean validateAddressQuantity(VCard vCard, Integer maxQantityOfAddresses) {
         Integer realQuantityOfaddresses = 0 ;
         if(vCard.hasAddresses()) {
             Iterator<AddressFeature> addressListIterator= vCard.getAddresses();
@@ -136,7 +136,7 @@ public class VCardSamsungHelper {
 	 *            - vCrad to be processed.
 	 * @return False if parsed object seems to be a problematic one.
 	 */
-    private Boolean validateScreenNamesArePresent(VCard vCard) {
+    private static Boolean validateScreenNamesArePresent(VCard vCard) {
         if( vCard.getDisplayableNameFeature().getName().equals("")
             || vCard.getFormattedName().getFormattedName().equals(""))
         {
@@ -152,7 +152,7 @@ public class VCardSamsungHelper {
      *            - vCrad to be processed.
      * @return False if parsed object seems to be a problematic one
      */
-    private Boolean validateaAddressCharacters(VCard vCard) {
+    private static Boolean validateaAddressCharacters(VCard vCard) {
         // TODO - New lines '\n' in address strings do not accepted.
         return true ;
         

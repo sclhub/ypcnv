@@ -24,7 +24,8 @@ mvnBin="/opt/maven/bin/mvn"
 
 # How much fields per artifact
 packsIdSetListBlockItemsQuantity=5
-packsIdSetList=("lib/cardme/cardme-v0.2.6.jar" "info.ineighborhood" "cardme" "0.2.6" "jar"
+packsIdSetList=( \
+"lib/cardme/cardme-v0.2.6.jar" "info.ineighborhood" "cardme" "0.2.6" "jar"
 "lib/cardme/cardme-src-v0.2.6.jar" "info.ineighborhood" "cardme-src" "0.2.6" "jar"
 "lib/cardme/mime-dir-j-2.1.0-1.jar" "org.ietf" "mimedir" "2.1.0-1" "jar"
 "lib/poi/poi-3.8-beta4-20110826.jar" "org.apache.poi" "poi" "3.8-beta4" "jar"
@@ -36,7 +37,8 @@ packsIdSetList=("lib/cardme/cardme-v0.2.6.jar" "info.ineighborhood" "cardme" "0.
 "lib/poi/ooxml-lib/dom4j-1.6.1.jar" "dom4j" "dom4j" "1.6.1" "jar"
 "lib/poi/ooxml-lib/stax-api-1.0.1.jar" "org.apache.poi" "stax-api" "1.0.1" "jar"
 "lib/poi/ooxml-lib/xmlbeans-2.3.0.jar" "org.apache.poi" "xmlbeans" "2.3.0" "jar"
-"lib/poi/lib/log4j-1.2.13.jar" "org.apache" "log4j" "1.2.13" "jar")
+"lib/poi/lib/log4j-1.2.13.jar" "org.apache" "log4j" "1.2.13" "jar"
+"lib/java-gnu-getopt/java-getopt-1.0.14.jar" "gnu" "getopt" "1.0.14" "jar")
 
 # Objects used to store artifact's information.
 artifactFile=""

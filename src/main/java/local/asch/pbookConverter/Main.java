@@ -20,9 +20,15 @@
 
 package local.asch.pbookConverter;
 
+import gnu.getopt.Getopt;
+import gnu.getopt.LongOpt;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import local.asch.outglook.Contact2k3;
 import local.asch.outglook.exceptions.FileViewException;
@@ -34,9 +40,29 @@ import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 public class Main {
+
+    /* Synonyms for GNU-GetOpt internal constants. */
+    static final int CLI_ARG_IS_OPTION = 0 ;
+    static final int CLI_ARG_IS_NOT_AN_OPTION = 1 ;
+
+    /*
+     * CLI options names and Id.
+     */
+
+    static final int OPT_IDX_HELP = 0 ;
+    static final int OPT_IDX_INPUTFILE = 1 ;
+    
+    static final Map<Integer, String> OPTIONS_NAMES_MAP = Collections
+            .unmodifiableMap(new HashMap<Integer, String>() {
+                private static final long serialVersionUID = -1986848358300263787L;
+                {
+                    put(OPT_IDX_HELP, "help");
+                    put(OPT_IDX_INPUTFILE, "if");
+                }
+            });
+    
     /** Logger. */
-    private static final Logger LOG = Logger
-            .getLogger(Main.class);
+    private static final Logger LOG = Logger.getLogger(Main.class);
 
     private static File getOutputDirectory(File candidatePath) {
         File outputPath = null ;
@@ -49,7 +75,7 @@ public class Main {
         return outputPath;
     }
     
-    public Main(){
+    static {
         LoggerHelper.initLogger(LOG);
     }
     
@@ -57,7 +83,61 @@ public class Main {
         if(args.length < 1) {
             throw new IllegalArgumentException("Command line argument can not be void, must be a file name.");
         }
-        File inputFile = new File(args[0]);
+
+        int detectorFeedback;
+        String theOptionArgument;
+        
+        LongOpt[] longopts = new LongOpt[OPTIONS_NAMES_MAP.size()];
+
+        StringBuffer strBuffer = new StringBuffer();
+        
+        longopts[OPT_IDX_HELP] = new LongOpt(
+                                        OPTIONS_NAMES_MAP.get(OPT_IDX_HELP),
+                                        LongOpt.NO_ARGUMENT, null, 'h');
+        longopts[OPT_IDX_INPUTFILE] = new LongOpt(
+                                        OPTIONS_NAMES_MAP.get(OPT_IDX_INPUTFILE),
+                                        LongOpt.REQUIRED_ARGUMENT, strBuffer, 'i');
+
+        Getopt getOption = new Getopt("local.asch.pbookConverter.Main", args, "", longopts);
+        getOption.setOpterr(false); // Turn off error messages in GNU-GetOpt.
+
+        while ((detectorFeedback = getOption.getopt()) != -1)
+            switch (detectorFeedback) {
+            case CLI_ARG_IS_OPTION:
+                theOptionArgument = getOption.getOptarg();
+                
+                char shadowShortName= (char) (new Integer(strBuffer.toString())).intValue() ;
+                String argumentOfOption = ((theOptionArgument != null) ? theOptionArgument : "null");
+                String optionName = longopts[getOption.getLongind()].getName() ;
+                LOG.info("Found option: '" + optionName + "/" + shadowShortName + "' = '" + argumentOfOption + "'.");
+
+                // XXX
+                if(optionName.compareTo(OPTIONS_NAMES_MAP.get(OPT_IDX_INPUTFILE)) == 0 ) {
+                    processInputFile(argumentOfOption);
+                }
+                
+                break;
+            case CLI_ARG_IS_NOT_AN_OPTION:
+                String messageNotAnOption = "Found CLI argument which is not an defined option." ; 
+                LOG.info(messageNotAnOption);
+                throw new IllegalArgumentException(messageNotAnOption);
+            case ':':
+                LOG.error("Need additional arguments for option"
+                        + (char) getOption.getOptopt());
+                break;
+            case '?':
+                String messageInvalidOption = "Invalid option '" + (char) getOption.getOptopt() + "'.";
+                LOG.error(messageInvalidOption);
+                throw new IllegalArgumentException(messageInvalidOption);
+            default:
+                String messageUnexpectedValue = "By getopt() returned unexpected value '" + detectorFeedback + "'.";
+                LOG.error(messageUnexpectedValue);
+                throw new IllegalArgumentException(messageUnexpectedValue);
+            }
+        }
+
+    private static void processInputFile(String inputFileName) throws IOException, FileViewException {
+        File inputFile = new File(inputFileName);
         File outputPath = getOutputDirectory(inputFile);
         
         ArrayList<Contact2k3> contactList = new ArrayList<Contact2k3>();

@@ -33,9 +33,12 @@ public class VCardSamsungHelper {
     /** Logger. */
     private static final Logger LOG = Logger.getLogger(VCardSamsungHelper.class);
 
-    public VCardSamsungHelper() {
+    static {
         LoggerHelper.initLogger(LOG);
     }
+
+//    public VCardSamsungHelper() {
+//    }
     
     /**
      * Some fields are encoded unproperly. Workaround - transliterate.

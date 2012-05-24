@@ -7,7 +7,7 @@
 
     <groupId>YPCnv</groupId>
     <artifactId>YPCnv</artifactId>
-    <version>120522</version>
+    <version>120523</version>
     <packaging>jar</packaging>
     
     <properties>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+<!DOCTYPE YPCnv SYSTEM "ypcnv-ant.dtd">
+-->
+<project name="YPCnv" basedir="." default="create-jar">
+    <!--ANT 1.7 is required                                        -->
+
+    <description>
+        YPCnv - Yellow Pages Converter
+    </description>
+
+    <property name="projectHome" value="/home/and/ASCH/coding/ypcnv"/>
+    <property name="dirBuildExportTo" value="${projectHome}/ypcnv"/>
+    <property name="libsSubDir" value="lib"/>
+
+    <target name="create-dtd">
+        <antstructure output="ypcnv-ant.dtd.new"/>
+    </target>
+
+    <target name="create-jar">
+        <jar destfile="${dirBuildExportTo}/ypcnv.jar">
+            <manifest>
+                <attribute name="Main-Class" value="ypcnv.converter.main.Main"/>
+                <attribute name="Class-Path" value=". help.txt ${libsSubDir}/charva.jar ${libsSubDir}/cardme-src-v0.2.6.jar ${libsSubDir}/cardme-v0.2.6.jar ${libsSubDir}/mime-dir-j-2.1.0-1.jar ${libsSubDir}/java-getopt-1.0.14.jar ${libsSubDir}/poi-3.8-beta4-20110826.jar ${libsSubDir}/poi-examples-3.8-beta4-20110826.jar ${libsSubDir}/poi-excelant-3.8-beta4-20110826.jar ${libsSubDir}/poi-ooxml-3.8-beta4-20110826.jar ${libsSubDir}/poi-ooxml-schemas-3.8-beta4-20110826.jar ${libsSubDir}/poi-scratchpad-3.8-beta4-20110826.jar ${libsSubDir}/commons-logging-1.1.jar ${libsSubDir}/junit-3.8.1.jar ${libsSubDir}/log4j-1.2.13.jar ${libsSubDir}/dom4j-1.6.1.jar ${libsSubDir}/stax-api-1.0.1.jar ${libsSubDir}/xmlbeans-2.3.0.jar ${libsSubDir}/org.junit_4.8.2.v4_8_2_v20110321-1705__junit.jar ${libsSubDir}/log4j.properties.jar"/>
+            </manifest>
+            <zipfileset dir="${projectHome}" includes="COPYING"/>
+            <zipfileset dir="${projectHome}" includes="README"/>
+            <zipfileset dir="${projectHome}/src/main/resources" includes="help.txt"/>
+            <fileset dir="${projectHome}/target/classes"/>
+            <fileset dir="${projectHome}/target/test-classes"/>
+        </jar>
+        <copy file="${projectHome}/COPYING" todir="${dirBuildExportTo}"/>
+        <copy file="${projectHome}/README" todir="${dirBuildExportTo}"/>
+        <delete dir="${dirBuildExportTo}/${libsSubDir}"/>
+        <mkdir dir="${dirBuildExportTo}/${libsSubDir}"/>
+        
+        <copy file="${projectHome}/ypcnv.sh" tofile="${dirBuildExportTo}/ypcnv"/>
+        <copy file="${projectHome}/lib/charva/libTerminal.so" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        
+        <copy file="/home/and/opt/bin/charva/charva.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/cardme/cardme-src-v0.2.6.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/cardme/cardme-v0.2.6.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/cardme/mime-dir-j-2.1.0-1.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/java-gnu-getopt/java-getopt-1.0.14.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/poi/poi-3.8-beta4-20110826.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/poi/poi-examples-3.8-beta4-20110826.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/poi/poi-excelant-3.8-beta4-20110826.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/poi/poi-ooxml-3.8-beta4-20110826.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/poi/poi-ooxml-schemas-3.8-beta4-20110826.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/poi/poi-scratchpad-3.8-beta4-20110826.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/poi/lib/commons-logging-1.1.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/poi/lib/junit-3.8.1.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/poi/lib/log4j-1.2.13.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/poi/ooxml-lib/dom4j-1.6.1.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/poi/ooxml-lib/stax-api-1.0.1.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/poi/ooxml-lib/xmlbeans-2.3.0.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/junit4/org.junit_4.8.2.v4_8_2_v20110321-1705__junit.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/lib/log4j.properties.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+    </target>
+</project>

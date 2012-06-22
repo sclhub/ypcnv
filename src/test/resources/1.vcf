@@ -1,0 +1,11 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Veterinary;;;;
+FN:Veterinary
+NAME:Veterinary
+PROFILE:VCARD
+ORG:Veterinary
+ADR;TYPE=WORK:;;;Scnd. line\, 2;;;
+TEL;TYPE=WORK:+1 234 567 89 01
+NOTE:Chief medical - Alexander.\nTherapeutist - Olga.\n\n
+END:VCARD

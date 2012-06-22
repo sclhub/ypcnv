@@ -10,3 +10,8 @@ bin
 .metadata
 .idea
 javadoc
+misc/
+ypcnv*.log
+hs_err_pid*.log
+/ypcnv/
+ypcnv-test-*

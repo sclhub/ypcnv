@@ -20,8 +20,10 @@
 #
 ##
 
-mvnBin="/opt/maven/bin/mvn"
+#mvnBin="/opt/maven/bin/mvn"
 
 #"${mvnBin}" clean:clean
-"${mvnBin}" compile
-"${mvnBin}" assembly:single
+#"${mvnBin}" compile
+#"${mvnBin}" assembly:single
+
+ant -lib ~/opt/bin/commons-net/commons-net-3.1.jar

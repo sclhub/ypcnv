@@ -1,0 +1,38 @@
+
+This is YPCnv - Yellow Pages Converter. Now implemented conversion of "visit card" objects from one format to another.
+
+SYNOPSIS
+
+    ypcnv [options]
+
+DESCRIPTION
+
+Coversion could be done if selected valid parameters of input and output targets. Parameters of each target are it's internal format and it's address.
+
+Parameters could be selected from command line interface (CLI) using an options.
+
+    --from="DataFormatId"
+    --to="DataFormatId"
+
+Source and destination data formats, donor's and acceptor's formats.
+
+DataFormatId can be VCF, XLS.
+
+    --if="file/name/or/directory"
+    --of="file/name/or/directory"
+
+Input and output file names or directories. File or directory - it depends on format. VCF can be processed as a directory with VCards, XLS - always single file.
+
+If for conversion to be started there is not enough parameters specified by CLI options, user uinterface (UI) will be started. With the help of UI, parameters can be set up and conversion can be launched. Depending on mouse support in your terminal you may use mouse in UI, double clicks prevailed. Also for navigation among UI items may be used Up and Down cursor keys and Tabulation keys, Enter - for select or launch.
+
+AUTHOR
+
+    ASCH
+
+REPORTING BUGS
+
+.@...
+
+COPYRIGHT
+        
+Copyright © 2011-2012 ASCH. License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>. This is free software: you are free to change and redistribute it. There is NO WARRANTY, to the extent permitted by law.

@@ -38,6 +38,9 @@ packsIdSetList=( \
 "lib/poi/ooxml-lib/stax-api-1.0.1.jar" "org.apache.poi" "stax-api" "1.0.1" "jar"
 "lib/poi/ooxml-lib/xmlbeans-2.3.0.jar" "org.apache.poi" "xmlbeans" "2.3.0" "jar"
 "lib/poi/lib/log4j-1.2.13.jar" "org.apache" "log4j" "1.2.13" "jar"
+"lib/charva/charva-1.1.4.jar" "charva" "charva" "1.1.4" "jar"
+"lib/charva/commons-logging-api.jar" "org.apache.commons.logging" "commons-logging-api" "0.0.0" "jar"
+"lib/charva/commons-logging.jar" "org.apache.commons.logging" "commons-logging" "0.0.0" "jar"
 "lib/java-gnu-getopt/java-getopt-1.0.14.jar" "gnu" "getopt" "1.0.14" "jar")
 
 # Objects used to store artifact's information.

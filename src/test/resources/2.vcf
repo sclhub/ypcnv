@@ -1,0 +1,12 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Retlif;V.K.;;Mr.;
+FN:Retlif V.K.
+NAME:Retlif V.K.
+PROFILE:VCARD
+ORG:GIS inc.
+ADR;TYPE=WORK:;;s/w st. Central\, Central square\, 2;;;;
+ADR;TYPE=OTHER:;;West trail st.\, 34;;;;
+TEL;TYPE=WORK:+1 222 333 44 77
+TEL;TYPE=CELL:+1 333-444-55-66
+END:VCARD

@@ -1,0 +1,12 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Cyclist's workshop;;;;
+FN:Cyclist's workshop
+NAME:Cyclist's workshop
+PROFILE:VCARD
+ORG:Cyclist's workshop
+ADR;TYPE=WORK:;;;Green street\, 30;;;
+TEL;TYPE=WORK:+1 222 333 44 55
+NOTE:Mon-Fri\: 11\:00-21\:00\nSat-Sun\: 11\:00-18\:00\nsubway st. Greenfiel
+ d\n\n
+END:VCARD

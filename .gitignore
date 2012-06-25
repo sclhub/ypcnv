@@ -15,6 +15,7 @@ hs_err_pid*.log
 misc/
 ypcnv*.log
 /ypcnv/
+/ypcnv-pack/
 src/test/resources/ypcnv-*
 /lib/log4j.properties.jar
 /launch.sh

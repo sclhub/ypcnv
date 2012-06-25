@@ -2,15 +2,17 @@
 <!--
 <!DOCTYPE YPCnv SYSTEM "ypcnv-ant.dtd">
 -->
-<project name="YPCnv" basedir="." default="create-jar">
-    <!--ANT 1.7 is required                                        -->
+<project name="YPCnv" basedir="." default="create-jar-runnable">
+    <!-- ANT 1.8.4 -->
 
     <description>
         YPCnv - Yellow Pages Converter
     </description>
 
-    <property name="projectHome" value="/home/and/ASCH/coding/ypcnv"/>
+    <property name="projectHome" value="."/>
+    <property name="projectSources" value="${projectHome}/src"/>
     <property name="dirBuildExportTo" value="${projectHome}/ypcnv"/>
+    <property name="dirPackExportTo" value="${projectHome}/ypcnv-pack"/>
     <property name="libsSubDir" value="lib"/>
     <property name="log4jPropJarFullName" value="${projectHome}/lib/log4j.properties.jar"/>
 
@@ -18,7 +20,39 @@
         <antstructure output="ypcnv-ant.dtd.new"/>
     </target>
 
-    <target name="create-jar">
+    <target name="create-pack">
+        <antcall target="dir.pickup">
+            <param name="dirName" value="${dirPackExportTo}"/>
+        </antcall>
+        <antcall target="create-pack-src"/>
+        <antcall target="create-pack-bin"/>
+    </target>
+
+    <target name="create-pack-src" depends="getTimestamp">
+        <antcall target="dir.pickup">
+            <param name="dirName" value="${dirPackExportTo}"/>
+        </antcall>
+        <jar destfile="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.jar">
+            <zipfileset dir="${projectHome}" includes="COPYING"/>
+            <zipfileset dir="${projectHome}" includes="README"/>
+            <fileset dir="${projectSources}"/>
+        </jar>
+        <tar destfile="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.tar.bz2" basedir="${dirPackExportTo}" includes="ypcnv-${versionTimestamp}-src.jar" compression="bzip2"/>
+        <delete file="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.jar"/>
+    </target>
+    
+    <target name="create-pack-bin" depends="getTimestamp">
+        <antcall target="dir.pickup">
+            <param name="dirName" value="${dirPackExportTo}"/>
+        </antcall>
+        <antcall target="create-jar-runnable"/>
+        <tar destfile="${dirPackExportTo}/ypcnv-${versionTimestamp}-bin.tar.bz2" basedir="${projectHome}" includes="ypcnv/*,ypcnv/lib/*" compression="bzip2"/>
+    </target>
+
+    <target name="create-jar-runnable">
+        <antcall target="dir.pickup">
+            <param name="dirName" value="${dirBuildExportTo}"/>
+        </antcall>
         <delete file="${log4jPropJarFullName}"/>
         <jar destfile="${log4jPropJarFullName}">
             <zipfileset dir="${projectHome}/src/main/resources" includes="log4j.properties"/>
@@ -61,5 +95,24 @@
         <copy file="${projectHome}/lib/poi/ooxml-lib/xmlbeans-2.3.0.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
         <copy file="${projectHome}/lib/junit4/org.junit_4.8.2.v4_8_2_v20110321-1705__junit.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
         <copy file="${projectHome}/lib/log4j.properties.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+    </target>
+
+    <target name="dir.pickup">
+        <condition property="dir.check.isExists">
+            <available file="${dirName}" type="dir"/>
+        </condition>
+        <antcall target="dir.create">
+            <param name="dirName" value="${dirName}"/>
+        </antcall>
+    </target>
+
+    <target name="dir.create" unless="dir.check.isExists">
+        <mkdir dir="${dirName}" />
+    </target>
+    
+    <target name="getTimestamp">
+        <tstamp >
+            <format property="versionTimestamp" pattern="yyMMdd"/>
+        </tstamp>
     </target>
 </project>

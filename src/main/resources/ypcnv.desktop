@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=YPCnv
+GenericName=YPCnv
+GenericName[en_GB]=YPCnv
+Comment=YPCnv - Yellow pages converter
+Comment[en_GB]=YPCnv - Yellow pages converter
+Type=Application
+Exec=java -jar ypcnv.jar
+Icon=ypcnv.svg
+Terminal=true
+Categories=Office;Utilities;
+

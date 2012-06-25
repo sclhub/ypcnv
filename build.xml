@@ -13,6 +13,7 @@
     <property name="projectSources" value="${projectHome}/src"/>
     <property name="dirBuildExportTo" value="${projectHome}/ypcnv"/>
     <property name="dirPackExportTo" value="${projectHome}/ypcnv-pack"/>
+    <property name="dirDocLocation" value="${projectHome}/ypcnv-doc"/>
     <property name="libsSubDir" value="lib"/>
     <property name="log4jPropJarFullName" value="${projectHome}/lib/log4j.properties.jar"/>
 
@@ -21,17 +22,53 @@
     </target>
 
     <target name="create-pack">
+<!--
+        <delete dir="${dirPackExportTo}"/>
+-->
         <antcall target="dir.pickup">
             <param name="dirName" value="${dirPackExportTo}"/>
         </antcall>
+        <antcall target="create-pack-doc"/>
         <antcall target="create-pack-src"/>
         <antcall target="create-pack-bin"/>
+    </target>
+
+    <target name="create-pack-doc" depends="getTimestamp">
+        <delete dir="${dirDocLocation}"/>
+        <exec executable="doxygen" dir="${projectHome}" failonerror="true">
+            <arg line="Doxyfile"/>
+        </exec>
+
+        <antcall target="dir.pickup">
+            <param name="dirName" value="${dirPackExportTo}"/>
+        </antcall>
+        <delete file="${dirPackExportTo}/ypcnv-${versionTimestamp}-doc.tar.bz2"/>
+        <tar destfile="${dirPackExportTo}/ypcnv-${versionTimestamp}-doc.tar.bz2" compression="bzip2">
+            <tarfileset dir="${dirDocLocation}"
+                        prefix="ypcnv-doc"
+                        preserveLeadingSlashes="false">
+                <include name="**"/>
+            </tarfileset>
+            <tarfileset dir="${projectHome}"
+                        prefix="ypcnv-doc"
+                        preserveLeadingSlashes="false">
+                <include name="COPYING"/>
+                <include name="README"/>
+            </tarfileset>
+        </tar>
+        <antcall target="createChkSumForFile">
+            <param name="chkSumTargetFile"
+                   value="${dirPackExportTo}/ypcnv-${versionTimestamp}-doc.tar.bz2"/>
+        </antcall>
     </target>
 
     <target name="create-pack-src" depends="getTimestamp">
         <antcall target="dir.pickup">
             <param name="dirName" value="${dirPackExportTo}"/>
         </antcall>
+        <delete file="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.jar"/>
+        <delete file="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.tar.bz2"/>
+        
         <jar destfile="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.jar">
             <zipfileset dir="${projectHome}" includes="COPYING"/>
             <zipfileset dir="${projectHome}" includes="README"/>
@@ -39,6 +76,11 @@
         </jar>
         <tar destfile="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.tar.bz2" basedir="${dirPackExportTo}" includes="ypcnv-${versionTimestamp}-src.jar" compression="bzip2"/>
         <delete file="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.jar"/>
+        <antcall target="createChkSumForFile">
+            <param name="chkSumTargetFile"
+                   value="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.tar.bz2"/>
+        </antcall>
+
     </target>
     
     <target name="create-pack-bin" depends="getTimestamp">
@@ -46,13 +88,39 @@
             <param name="dirName" value="${dirPackExportTo}"/>
         </antcall>
         <antcall target="create-jar-runnable"/>
-        <tar destfile="${dirPackExportTo}/ypcnv-${versionTimestamp}-bin.tar.bz2" basedir="${projectHome}" includes="ypcnv/*,ypcnv/lib/*" compression="bzip2"/>
+        <delete file="${dirPackExportTo}/ypcnv-${versionTimestamp}-bin.tar.bz2"/>
+        <tar destfile="${dirPackExportTo}/ypcnv-${versionTimestamp}-bin.tar.bz2" compression="bzip2">
+<!--
+            <tarfileset file="${dirBuildExportTo}/ypcnv"
+                        filemode="755"
+                        prefix="ypcnv"
+                        preserveLeadingSlashes="false"/>
+-->
+            <tarfileset dir="${dirBuildExportTo}" prefix="ypcnv" preserveLeadingSlashes="false">
+<!--
+                <exclude name="${dirBuildExportTo}/ypcnv"/>
+-->
+                <include name="**"/>
+            </tarfileset>
+            <tarfileset dir="${projectHome}/src/test/resources/"
+                        prefix="ypcnv/example" preserveLeadingSlashes="false">
+                <include name="*vcf"/>
+                <include name="example-phonebook.xls"/>
+            </tarfileset>
+        </tar>
+        <antcall target="createChkSumForFile">
+            <param name="chkSumTargetFile"
+                   value="${dirPackExportTo}/ypcnv-${versionTimestamp}-bin.tar.bz2"/>
+        </antcall>
+
     </target>
 
     <target name="create-jar-runnable">
+        <delete dir="${dirBuildExportTo}"/>
         <antcall target="dir.pickup">
             <param name="dirName" value="${dirBuildExportTo}"/>
         </antcall>
+
         <delete file="${log4jPropJarFullName}"/>
         <jar destfile="${log4jPropJarFullName}">
             <zipfileset dir="${projectHome}/src/main/resources" includes="log4j.properties"/>
@@ -61,7 +129,7 @@
         <jar destfile="${dirBuildExportTo}/ypcnv.jar">
             <manifest>
                 <attribute name="Main-Class" value="ypcnv.converter.main.Main"/>
-                <attribute name="Class-Path" value=". help.txt ${libsSubDir}/charva.jar ${libsSubDir}/cardme-src-v0.2.6.jar ${libsSubDir}/cardme-v0.2.6.jar ${libsSubDir}/mime-dir-j-2.1.0-1.jar ${libsSubDir}/java-getopt-1.0.14.jar ${libsSubDir}/poi-3.8-beta4-20110826.jar ${libsSubDir}/poi-examples-3.8-beta4-20110826.jar ${libsSubDir}/poi-excelant-3.8-beta4-20110826.jar ${libsSubDir}/poi-ooxml-3.8-beta4-20110826.jar ${libsSubDir}/poi-ooxml-schemas-3.8-beta4-20110826.jar ${libsSubDir}/poi-scratchpad-3.8-beta4-20110826.jar ${libsSubDir}/commons-logging-1.1.jar ${libsSubDir}/junit-3.8.1.jar ${libsSubDir}/log4j-1.2.13.jar ${libsSubDir}/dom4j-1.6.1.jar ${libsSubDir}/stax-api-1.0.1.jar ${libsSubDir}/xmlbeans-2.3.0.jar ${libsSubDir}/org.junit_4.8.2.v4_8_2_v20110321-1705__junit.jar ${libsSubDir}/log4j.properties.jar"/>
+                <attribute name="Class-Path" value=". help.txt ${libsSubDir}/charva-1.1.4.jar ${libsSubDir}/cardme-src-v0.2.6.jar ${libsSubDir}/cardme-v0.2.6.jar ${libsSubDir}/mime-dir-j-2.1.0-1.jar ${libsSubDir}/java-getopt-1.0.14.jar ${libsSubDir}/poi-3.8-beta4-20110826.jar ${libsSubDir}/poi-examples-3.8-beta4-20110826.jar ${libsSubDir}/poi-excelant-3.8-beta4-20110826.jar ${libsSubDir}/poi-ooxml-3.8-beta4-20110826.jar ${libsSubDir}/poi-ooxml-schemas-3.8-beta4-20110826.jar ${libsSubDir}/poi-scratchpad-3.8-beta4-20110826.jar ${libsSubDir}/commons-logging-1.1.jar ${libsSubDir}/junit-3.8.1.jar ${libsSubDir}/log4j-1.2.13.jar ${libsSubDir}/dom4j-1.6.1.jar ${libsSubDir}/stax-api-1.0.1.jar ${libsSubDir}/xmlbeans-2.3.0.jar ${libsSubDir}/org.junit_4.8.2.v4_8_2_v20110321-1705__junit.jar ${libsSubDir}/log4j.properties.jar"/>
             </manifest>
             <zipfileset dir="${projectHome}" includes="COPYING"/>
             <zipfileset dir="${projectHome}" includes="README"/>
@@ -73,10 +141,14 @@
         <delete dir="${dirBuildExportTo}/${libsSubDir}"/>
         <mkdir dir="${dirBuildExportTo}/${libsSubDir}"/>
         
-        <copy file="${projectHome}/ypcnv.sh" tofile="${dirBuildExportTo}/ypcnv"/>
-        <copy file="${projectHome}/lib/charva/libTerminal.so" todir="${dirBuildExportTo}/${libsSubDir}"/>
         
-        <copy file="/home/and/opt/bin/charva/charva.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        <copy file="${projectHome}/ypcnv.sh" tofile="${dirBuildExportTo}/ypcnv"/>
+        <copy file="${projectHome}/src/main/resources/ypcnv.svg" todir="${dirBuildExportTo}"/>
+        <copy file="${projectHome}/src/main/resources/ypcnv.desktop" todir="${dirBuildExportTo}"/>
+
+        <copy file="${projectHome}/lib/charva/libTerminal.so" todir="${dirBuildExportTo}/${libsSubDir}"/>
+       
+        <copy file="${projectHome}/lib/charva/charva-1.1.4.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
         <copy file="${projectHome}/lib/cardme/cardme-src-v0.2.6.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
         <copy file="${projectHome}/lib/cardme/cardme-v0.2.6.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
         <copy file="${projectHome}/lib/cardme/mime-dir-j-2.1.0-1.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
@@ -95,6 +167,11 @@
         <copy file="${projectHome}/lib/poi/ooxml-lib/xmlbeans-2.3.0.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
         <copy file="${projectHome}/lib/junit4/org.junit_4.8.2.v4_8_2_v20110321-1705__junit.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
         <copy file="${projectHome}/lib/log4j.properties.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
+        
+        <exec executable="chmod" dir="${dirBuildExportTo}" failonerror="true">
+            <arg line="0755 ypcnv" />
+        </exec>
+
     </target>
 
     <target name="dir.pickup">
@@ -110,9 +187,17 @@
         <mkdir dir="${dirName}" />
     </target>
     
+    <target name="createChkSumForFile">
+        <checksum file="${chkSumTargetFile}"
+              pattern="{0}  {1}"
+              algorithm="SHA-256" fileext=".sha256.asc"/>
+    </target>
+    
     <target name="getTimestamp">
         <tstamp >
             <format property="versionTimestamp" pattern="yyMMdd"/>
         </tstamp>
     </target>
+
+    
 </project>

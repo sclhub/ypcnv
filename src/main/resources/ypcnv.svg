@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="128"
+   height="128"
+   id="svg2">
+  <title
+     id="title3899">YPCnv</title>
+  <defs
+     id="defs4">
+    <filter
+       x="-0.11533142"
+       y="-0.12388871"
+       width="1.2306628"
+       height="1.2477773"
+       color-interpolation-filters="sRGB"
+       id="filter3857">
+      <feGaussianBlur
+         id="feGaussianBlur3859"
+         stdDeviation="5.4737373" />
+    </filter>
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>YPCnv</dc:title>
+        <dc:date>2012-06-25</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>ASCH</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>ASCH, GNU General Public License 3 or later</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <cc:license
+           rdf:resource="http://www.gnu.org/licenses/" />
+        <dc:description>This file is a part of YPCnv - Yellow Pages Converter. Copyright 2012 ASCH, GNU General Public License 3 or later.</dc:description>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>ASCH</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="g3861">
+    <path
+       d="m 86.062753,12.692241 c -12.325867,-0.234774 -29.094137,5.302226 -44.09375,9.6875 29.60859,-1.88714 71.030627,-16.6998197 31.90625,36.78125 -11.044981,-0.33688 -13.69465,-15.60517 -19.46875,-25.3125 l -3.40625,61.8125 c 28.0091,6.069199 57.103257,-5.0221 70.312497,-20.1875 -10.86987,10.0413 -23.904618,1.08025 -29.187497,-3.15625 20.465197,-46.601466 11.952227,-59.281869 -6.0625,-59.625 z m -63.21875,2.4375 c -5.52285,0 -10,4.477152 -10,10 0,5.522848 4.47715,10 10,10 5.52285,0 10,-4.477152 10,-10 0,-5.522848 -4.47715,-10 -10,-10 z m 3.0625,66.59375 c -10.21727,0 -18.4999998,8.282732 -18.4999998,18.499999 0,10.21727 8.2827298,18.5 18.4999998,18.5 10.21727,0 18.5,-8.28273 18.5,-18.5 0,-10.217267 -8.28273,-18.499999 -18.5,-18.499999 z"
+       id="path3774-48"
+       style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:20;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3857)" />
+    <path
+       d="m 60.106462,31.269962 a 11.680609,10.585551 0 1 1 -23.361217,0 11.680609,10.585551 0 1 1 23.361217,0 z"
+       transform="matrix(0.85611976,0,0,0.94468392,-18.62161,-4.4145111)"
+       id="path3774"
+       style="fill:#ff0000;fill-opacity:1;stroke:none" />
+    <path
+       d="m 60.106462,31.269962 a 11.680609,10.585551 0 1 1 -23.361217,0 11.680609,10.585551 0 1 1 23.361217,0 z"
+       transform="matrix(1.5838216,0,0,1.7476653,-50.80415,45.586919)"
+       id="path3774-4"
+       style="fill:#00ff00;fill-opacity:1;stroke:none" />
+    <path
+       d="M 41.95759,22.377119 C 71.56618,20.489979 112.98771,5.6830389 73.863341,59.164109 62.81836,58.827229 60.16976,43.563459 54.39566,33.856129 l -3.40684,61.80987 c 28.0091,6.069201 57.11776,-5.0323 70.327,-20.1977 -10.86987,10.0413 -23.91865,1.073 -29.201529,-3.1635 C 126.58199,-6.1818811 78.879714,11.582599 41.95759,22.377119 z"
+       id="path3794"
+       style="fill:#0000ff;fill-opacity:1;stroke:none" />
+  </g>
+</svg>

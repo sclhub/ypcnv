@@ -17,6 +17,13 @@
  *  along with YPCnv.  If not, see <http://www.gnu.org/licenses/>.
  *  
  */
+
+/*!
+ * \file
+ * \brief Main window.
+ * 
+ */
+
 package ypcnv.converter.mainFrame;
 
 import java.io.File;

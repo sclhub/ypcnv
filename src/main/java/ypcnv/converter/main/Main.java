@@ -18,6 +18,12 @@
  *  
  */
 
+/*!
+ * \file
+ * \brief Entrance point for YPCnv.
+ * 
+ */
+
 package ypcnv.converter.main;
 
 import java.io.IOException;

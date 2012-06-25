@@ -11,19 +11,33 @@ Coversion could be done if selected valid parameters of input and output targets
 
 Parameters could be selected from command line interface (CLI) using an options.
 
+Options:
     --from="DataFormatId"
     --to="DataFormatId"
 
-Source and destination data formats, donor's and acceptor's formats.
+These options are source and destination data formats, donor's and acceptor's formats.
 
 DataFormatId can be VCF, XLS.
 
+Options:
     --if="file/name/or/directory"
     --of="file/name/or/directory"
 
-Input and output file names or directories. File or directory - it depends on format. VCF can be processed as a directory with VCards, XLS - always single file.
+These options are input and output names of file or directory. File or directory - it depends on format. VCF can be processed as a directory with VCards, XLS - always single file.
+
+Specifing of input or output file or directory name may be used to preselect directory in open file dialogs. 
 
 If for conversion to be started there is not enough parameters specified by CLI options, user uinterface (UI) will be started. With the help of UI, parameters can be set up and conversion can be launched. Depending on mouse support in your terminal you may use mouse in UI, double clicks prevailed. Also for navigation among UI items may be used Up and Down cursor keys and Tabulation keys, Enter - for select or launch.
+
+Java default dialog is used for file selection. It is tricky or unusual for today. To select directory you need enter into it, do not select any files in the list, and then press "OK" or "Select" button.
+
+Usual keys for navigation through user interface and for items selection are Cursor, Tabulation and Enter key. Shift+Tabulation will cycle input focus in reverse order among interface items.
+
+FILES
+
+    .ypcnv.log - Program activity journal file. Located in the home directory. Size is limited to a small enough value (look for log4j properties file inside YPCnv).
+
+    .ypcnv-stderr.log - Standart error stream is redirected into this file. Located in the home directory. File is overwriten at each start.
 
 AUTHOR
 
@@ -31,7 +45,7 @@ AUTHOR
 
 REPORTING BUGS
 
-.@...
+    https://github.com/sclhub/ypcnv
 
 COPYRIGHT
         

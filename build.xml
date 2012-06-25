@@ -12,12 +12,18 @@
     <property name="projectHome" value="/home/and/ASCH/coding/ypcnv"/>
     <property name="dirBuildExportTo" value="${projectHome}/ypcnv"/>
     <property name="libsSubDir" value="lib"/>
+    <property name="log4jPropJarFullName" value="${projectHome}/lib/log4j.properties.jar"/>
 
     <target name="create-dtd">
         <antstructure output="ypcnv-ant.dtd.new"/>
     </target>
 
     <target name="create-jar">
+        <delete file="${log4jPropJarFullName}"/>
+        <jar destfile="${log4jPropJarFullName}">
+            <zipfileset dir="${projectHome}/src/main/resources" includes="log4j.properties"/>
+        </jar>
+
         <jar destfile="${dirBuildExportTo}/ypcnv.jar">
             <manifest>
                 <attribute name="Main-Class" value="ypcnv.converter.main.Main"/>
@@ -27,7 +33,6 @@
             <zipfileset dir="${projectHome}" includes="README"/>
             <zipfileset dir="${projectHome}/src/main/resources" includes="help.txt"/>
             <fileset dir="${projectHome}/target/classes"/>
-            <fileset dir="${projectHome}/target/test-classes"/>
         </jar>
         <copy file="${projectHome}/COPYING" todir="${dirBuildExportTo}"/>
         <copy file="${projectHome}/README" todir="${dirBuildExportTo}"/>

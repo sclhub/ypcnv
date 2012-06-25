@@ -25,23 +25,19 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ypcnv.converter.conf.DataSourceConf;
 import ypcnv.converter.main.Converter;
-import ypcnv.converter.mainFrame.MainFrameMeta;
 import ypcnv.converter.menu.AboutPanel;
 import ypcnv.converter.menu.HelpPanel;
-import ypcnv.converter.menu.SelectFile;
 import ypcnv.converter.menu.SelectDataSourceFormat;
+import ypcnv.converter.menu.SelectFile;
 import ypcnv.converter.menu.UIMetaData;
 import ypcnv.errorCodes.ErrorCodes;
 import ypcnv.views.abstr.DataFormatID;
 import ypcnv.views.abstr.Side;
-
-import charva.awt.Color;
 import charva.awt.Container;
 import charva.awt.GridBagConstraints;
 import charva.awt.GridBagLayout;
@@ -77,6 +73,9 @@ public class MainFrame extends JFrame
     /** Data acceptor configuration indicator. */
     private ChoosenFilePanel outFileNamePanel = null ;
 
+//    /** Name of the last used file or directory. */
+//    private File lastUsedrFileObject = null ;
+    
     /** Message and log panel. */
     private MessagePanel messagePanel = null ;
     
@@ -104,10 +103,14 @@ public class MainFrame extends JFrame
         initMainFrame();
     }
 
+//    public File getLastUsedrFileObject() {
+//        return lastUsedrFileObject;
+//    }
+
     /** Setup main farme. */
     private void initMainFrame() {
-        setForeground(Color.white);
-        setBackground(Color.black);
+        setForeground(UIMetaData.colorFG);
+        setBackground(UIMetaData.colorBG);
         Container contentPane = getContentPane();
         contentPane.setLayout(new GridBagLayout());
 
@@ -252,7 +255,8 @@ public class MainFrame extends JFrame
             File newAddress = SelectFile.selectFileDialog(
                                     this, 
                                     UIMetaData.FileSelect.headerDonor,
-                                    null);
+                                    null,
+                                    srcObjectConfig);
             LOG.debug("Choosen input file (null is Cancel pressed): " + newAddress);
             if(newAddress != null) {
                 srcObjectConfig.setObjectAddress(newAddress);
@@ -264,7 +268,8 @@ public class MainFrame extends JFrame
             File newAddress = SelectFile.selectFileDialog(
                                     this,
                                     UIMetaData.FileSelect.headerAcceptor,
-                                    null);
+                                    null,
+                                    dstObjectConfig);
             if(newAddress != null) {
                 dstObjectConfig.setObjectAddress(newAddress);
                 outFileNamePanel.setContent(dstObjectConfig.getObjectAddress().toString());

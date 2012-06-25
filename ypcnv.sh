@@ -1,15 +1,16 @@
-thisPath="$( dirname "${0}" )"
-savedDir="$( pwd )"
-cd "${thisPath}"
+terminalBin="/usr/bin/lxterminal"
+tty -s
+[ ${?} -ne 0 ] \
+    && "${terminalBin}" -e "$0" \
+    && exit
 
-libTerminalPath="$( dirname "lib/libTerminal.so" )"
+thisPath="$( dirname "${0}" )"
+
+libTerminalPath="$( dirname "${thisPath}/lib/libTerminal.so" )"
 export LD_LIBRARY_PATH=${libTerminalPath}:${LD_LIBRARY_PATH}
 
-test -z "TERM" \
+test -z "${TERM}" \
     && export TERM=xterm
 
-java -jar "ypcnv.jar" "${@}" 2>"ypcnv-stderr.log"
+java -jar "${thisPath}/ypcnv.jar" "${@}" 2>"${HOME}/.ypcnv-stderr.log"
 stty sane
-
-cd "${savedDir}"
-echo "Warning:$0:${LINENO}: Log file realisation may write into current but not desired directory."

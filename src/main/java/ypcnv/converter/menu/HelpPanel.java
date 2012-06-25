@@ -27,7 +27,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import charva.awt.BorderLayout;
-import charva.awt.Color;
 import charva.awt.Container;
 import charva.awt.Frame;
 import charva.awt.Point;
@@ -61,16 +60,21 @@ public class HelpPanel extends JDialog implements ActionListener {
         
         /** Canvas frame. */
         Container aboutPanelContainer = getContentPane();
-
+        aboutPanelContainer.setBackground(UIMetaData.colorBG);
+        aboutPanelContainer.setForeground(UIMetaData.colorFG);
+        
         /** Frame with content panel. */
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.add(new TextAreaPanel());
-
+        contentPanel.setBackground(UIMetaData.colorBG);
+        contentPanel.setForeground(UIMetaData.colorFG);
+        contentPanel.setBorder(new LineBorder(UIMetaData.colorFG));
+        
         /** Hint panel. */
         JPanel hintPanel = new JPanel();
         hintPanel.setLayout(new BoxLayout(hintPanel, BoxLayout.Y_AXIS));
-        hintPanel.add(new JLabel(""));
+        hintPanel.add(new JLabel(""));// XXX - extract to Meta
         hintPanel.add(new JLabel("Use cursor UP and DOWN keys to scroll."));
         hintPanel.add(new JLabel("Use TAB key to move input focus."));
         hintPanel.add(new JLabel(""));
@@ -87,6 +91,7 @@ public class HelpPanel extends JDialog implements ActionListener {
         aboutPanelContainer.add(buttonPanel, BorderLayout.SOUTH);
 
         aboutPanelContainer.setLocation(topLeftCorner);
+
         pack();
 
     }
@@ -125,10 +130,13 @@ public class HelpPanel extends JDialog implements ActionListener {
             contentTextArea.setEditable(false);
             contentTextArea.setLineWrap(true);
             contentTextArea.setWrapStyleWord(true);
+            contentTextArea.setBackground(UIMetaData.colorBG);
+            contentTextArea.setForeground(UIMetaData.colorFG);
 
             JScrollPane scrollpane = new JScrollPane(contentTextArea);
-            scrollpane.setViewportBorder(new LineBorder(Color.white));
-
+            scrollpane.setViewportBorder(new LineBorder(UIMetaData.colorFG));
+            scrollpane.setBackground(UIMetaData.colorScrollCursor);
+            
             add(scrollpane, BorderLayout.NORTH);
         }
 

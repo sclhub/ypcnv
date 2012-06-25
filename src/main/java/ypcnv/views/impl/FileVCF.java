@@ -349,7 +349,7 @@ public class FileVCF extends DataSourceAbstractImpl implements FileSystem {
     private List<File> collectFileNames() {
         Calendar timestamp = Calendar.getInstance();
         outDirUUIDAsString = new File(String.format(
-                "ypcnv-test-%1$tY-%1$tm-%1$te_%1$tH%1$tM_%1$tS-%1$tL", timestamp));
+                "ypcnv-%1$tY-%1$tm-%1$te_%1$tH%1$tM_%1$tS-%1$tL", timestamp));
 
         if (((File)address).isDirectory()) {
             File[] vcfFiles = ((File)address)

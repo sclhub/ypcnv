@@ -23,7 +23,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import charva.awt.BorderLayout;
-import charva.awt.Color;
 import charva.awt.Container;
 import charva.awt.Frame;
 import charva.awt.Point;
@@ -120,9 +119,12 @@ public class AboutPanel extends JDialog implements ActionListener {
             contentTextArea.setEditable(false);
             contentTextArea.setLineWrap(true);
             contentTextArea.setWrapStyleWord(true);
+            contentTextArea.setBackground(UIMetaData.colorBG);
+            contentTextArea.setForeground(UIMetaData.colorFG);
 
             JScrollPane scrollpane = new JScrollPane(contentTextArea);
-            scrollpane.setViewportBorder(new LineBorder(Color.white));
+            scrollpane.setViewportBorder(new LineBorder(UIMetaData.colorFG));
+            scrollpane.setBackground(UIMetaData.colorScrollCursor);
 
             add(scrollpane, BorderLayout.NORTH);
         }

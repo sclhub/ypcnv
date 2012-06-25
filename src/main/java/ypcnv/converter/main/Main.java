@@ -27,7 +27,6 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Appender;
@@ -102,6 +101,7 @@ public class Main {
             System.exit(ErrorCodes.OK.get());
         } else {
             terminateConsoleLogging();
+            System.setProperty("charva.color","");
             MainFrame mainFrame = new MainFrame(confsList);
             mainFrame.show();
         }

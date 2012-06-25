@@ -21,28 +21,65 @@ package ypcnv.converter.menu;
 
 import java.io.File;
 
-import charva.awt.Color;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import ypcnv.converter.conf.DataSourceConf;
 import charva.awt.Component;
 import charvax.swing.JFileChooser;
 
 /** File selection dialog. */
 public class SelectFile {
+    
+    /** Logger. */
+    @SuppressWarnings("unused")
+    private static final Log LOG = LogFactory.getLog(SelectFile.class);
+
     /**
      * Dialog launcher.
      * @param owner - parent component.
      * @param dialogTitle - header.
      * @param fileFilterExpression - file name mask, filter - regular expression.
-     * @return selected file
+     * @return Selected file, or <b>null</b> if nothing selected. 
      */
     public static File selectFileDialog(Component owner,
                                 String dialogTitle,
-                                final String fileFilterExpression) {
-        // TODO - create last used directory behaviour.
+                                final String fileFilterExpression,
+                                final DataSourceConf preSelectFrom) {
         File selectedFile = null ;
-        JFileChooser filenameSelector = new JFileChooser();
+        if(preSelectFrom == null) {
+            selectedFile = new File(System.getProperty("user.dir"));
+        } else if(preSelectFrom.getObjectAddress() != null) {
+            String preSelectName =  preSelectFrom.getObjectAddress().toString();
+            if(preSelectName != null) {            
+                selectedFile = new File(preSelectName);
+            } else {
+                selectedFile = new File(System.getProperty("user.dir"));
+            }
+    
+            if(selectedFile != null 
+                    && ! selectedFile.exists()) {
+    
+                String upName = selectedFile.getParent();
+                
+                if(upName != null && new File(upName).exists()) {
+                    selectedFile = new File(upName);
+                } else {
+                    selectedFile = new File(System.getProperty("user.dir"));
+                }
+            }
+        } else {
+            selectedFile = new File(System.getProperty("user.dir"));
+        }
+        
+        if(!selectedFile.isDirectory()) {
+            selectedFile = new File(selectedFile.getParent());
+        }
+        
+        JFileChooser filenameSelector = new JFileChooser(selectedFile);
         filenameSelector.setDialogTitle(dialogTitle);
-        filenameSelector.setForeground(Color.white);
-        filenameSelector.setBackground(Color.black);
+        filenameSelector.setForeground(UIMetaData.colorFG);
+        filenameSelector.setBackground(UIMetaData.colorBG);
         
         /** Class of files to be allowed to be selected. */
         int targetObjectFamily = JFileChooser.FILES_AND_DIRECTORIES;
@@ -63,6 +100,8 @@ public class SelectFile {
                     ==
                 JFileChooser.APPROVE_OPTION) {
             selectedFile = new File(filenameSelector.getSelectedFile().getAbsolutePath());
+        } else {
+            selectedFile = null ;
         }
         
         return selectedFile ;

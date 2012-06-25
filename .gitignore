@@ -1,6 +1,7 @@
 .repository
 target
 bin
+hs_err_pid*.log
 *.iml
 *.ipr
 *.iws
@@ -9,9 +10,11 @@ bin
 .settings
 .metadata
 .idea
-javadoc
+/doxy-doc
+/javadoc
 misc/
 ypcnv*.log
-hs_err_pid*.log
 /ypcnv/
-ypcnv-test-*
+src/test/resources/ypcnv-*
+/lib/log4j.properties.jar
+/launch.sh

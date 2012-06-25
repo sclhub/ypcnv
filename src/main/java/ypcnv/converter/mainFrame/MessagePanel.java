@@ -22,8 +22,8 @@ package ypcnv.converter.mainFrame;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import ypcnv.converter.menu.UIMetaData;
 import charva.awt.BorderLayout;
-import charva.awt.Color;
 import charva.awt.Toolkit;
 import charvax.swing.JPanel;
 import charvax.swing.JScrollPane;
@@ -62,7 +62,7 @@ public class MessagePanel extends JPanel {
         textArea.setWrapStyleWord(false);
         
         JScrollPane scrollpane = new JScrollPane(textArea);
-        scrollpane.setViewportBorder(new LineBorder(Color.white));
+        scrollpane.setViewportBorder(new LineBorder(UIMetaData.colorFG));
         add(scrollpane);
 
     }

@@ -23,6 +23,7 @@
  */
 package ypcnv.converter.menu;
 
+import charva.awt.Color;
 import charva.awt.Point;
 
 
@@ -35,6 +36,12 @@ public class UIMetaData {
     // XXX - magic numbers
     /** Common size of a dialog. */
     public static final Point dialogCommonSize = new Point(60,25);
+    
+    public static final Color colorBG = Color.black ;
+    public static final Color colorFG = Color.white ;
+    public static final Color colorFGHi = new Color(255,255,255) ;
+    
+    public static final Color colorScrollCursor = Color.magenta ;
     
     /** Data source format selection frame. */
     public class SelectFormat {
@@ -53,6 +60,9 @@ public class UIMetaData {
         /** Hint panel content*/
         public static final String hint = "Use Tab and cursor keys to move.\n" +
         		"Use Enter key to select." ;
+        
+        /** Width of indicator of already selected. */
+        public static final int choosenItemsFieldWidth = 7 ;
     }
     
     

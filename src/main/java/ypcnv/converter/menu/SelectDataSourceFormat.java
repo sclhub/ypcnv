@@ -26,7 +26,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ypcnv.converter.conf.DataSourceConf;
-import ypcnv.converter.menu.HintPanel;
 import ypcnv.converter.mainFrame.MainFrame;
 import ypcnv.converter.mainFrame.MainFrameMeta;
 import ypcnv.helpers.EnumHelper;
@@ -35,6 +34,7 @@ import ypcnv.views.abstr.Side;
 import charva.awt.BorderLayout;
 import charva.awt.Component;
 import charva.awt.Container;
+import charva.awt.Font;
 import charva.awt.Point;
 import charva.awt.event.ActionEvent;
 import charva.awt.event.ActionListener;
@@ -100,7 +100,8 @@ public class SelectDataSourceFormat extends JDialog implements ActionListener {
      */
     private void initSelectDataSourceFormat(Component owner) {
         Container selectFormatPaneContainer = getContentPane();
-
+        selectFormatPaneContainer.setBackground(UIMetaData.colorBG);
+        
         JPanel hintPanel = new HintPanel(UIMetaData.SelectFormat.hint);
         
         /* * */
@@ -200,24 +201,34 @@ public class SelectDataSourceFormat extends JDialog implements ActionListener {
             fileFormatsList.setVisibleRowCount( visibleRowsQuantity );
             fileFormatsList.setColumns( listWidth );
             fileFormatsList.addListSelectionListener(this);
-            JScrollPane inFormatsScrollPane = new JScrollPane(fileFormatsList);
-            inFormatsScrollPane.setViewportBorder(new TitledBorder("> " + listTitle + " <"));
+            fileFormatsList.setBackground(UIMetaData.colorBG);
+            fileFormatsList.setForeground(UIMetaData.colorFG);
 
-            add(inFormatsScrollPane, BorderLayout.NORTH);
+            JScrollPane formatsScrollPane = new JScrollPane(fileFormatsList);
+            formatsScrollPane.setViewportBorder(new TitledBorder("> " + listTitle + " <"));
+            formatsScrollPane.setBackground(UIMetaData.colorBG);
+            formatsScrollPane.setForeground(UIMetaData.colorFG);
+            
+            add(formatsScrollPane, BorderLayout.NORTH);
 
             JPanel choosenItemsPanel = new JPanel();
             choosenItemsPanel.add(new JLabel(UIMetaData.SelectFormat.selectedAreaLabel));
 
-            choosenItemsTextField = new JTextField( 7 );
+            choosenItemsTextField = new JTextField( UIMetaData.SelectFormat.choosenItemsFieldWidth );
             choosenItemsTextField.setEnabled(false);
             if(preChoosenItem == null) {
                 choosenItemsTextField.setText(UIMetaData.SelectFormat.defaultFormatName);
             } else {
                 choosenItemsTextField.setText(preChoosenItem.toString());
             }
-
-            
+            choosenItemsTextField.setBackground(UIMetaData.colorBG);
+            choosenItemsTextField.setForeground(UIMetaData.colorFGHi);
+            choosenItemsTextField.setFont(new Font(null, charva.awt.Font.BOLD, 0));
             choosenItemsPanel.add(choosenItemsTextField);
+
+            choosenItemsPanel.setBackground(UIMetaData.colorBG);
+            choosenItemsPanel.setForeground(UIMetaData.colorFG);
+            
             add(choosenItemsPanel, BorderLayout.SOUTH);
 
             pack();

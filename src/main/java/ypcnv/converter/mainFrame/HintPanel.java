@@ -62,7 +62,7 @@ public class HintPanel extends JPanel {
         
         JScrollPane scrollpane = new JScrollPane(textArea);
         
-        //scrollpane.setViewportBorder(new LineBorder(Color.white));
+        //scrollpane.setViewportBorder(new LineBorder(UIMetaData.colorFG));
         scrollpane.setViewportBorder(new EmptyBorder(1, 1, 1, 1));
         
         add(scrollpane);

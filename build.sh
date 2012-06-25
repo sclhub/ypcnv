@@ -26,4 +26,4 @@
 #"${mvnBin}" compile
 #"${mvnBin}" assembly:single
 
-ant create-pack
+ant clean init compile && ant pack

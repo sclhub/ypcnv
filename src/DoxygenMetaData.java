@@ -36,7 +36,7 @@
  * You may use 'ypcnv.desktop' file, packaged with YPCnv, to set up a button in
  * a launch panel or a toolbar.
  * 
- * \section Miscellaneous
+ * \section Misc Miscellaneous
  * 
  * \subsection UI_details UI details
  * 

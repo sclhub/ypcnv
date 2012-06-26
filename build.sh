@@ -20,10 +20,12 @@
 #
 ##
 
-#mvnBin="/opt/maven/bin/mvn"
+#mvnBin="mvn"
 
 #"${mvnBin}" clean:clean
 #"${mvnBin}" compile
 #"${mvnBin}" assembly:single
 
-ant clean init compile && ant pack
+ant clean init compile \
+    && ant jar \
+    && ant pack

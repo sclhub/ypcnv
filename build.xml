@@ -9,39 +9,51 @@
         YPCnv - Yellow Pages Converter
     </description>
 
-    <property name="projectHome" value="."/>
-    <property name="projectSources" value="${projectHome}/src"/>
+    <property name="projectHome" location="."/>
+    <property name="prjBuildSite" location="${projectHome}/build-site"/>
+
+    <property name="srcSubDir" value="src"/>
+    <property name="libSubDir" value="lib"/>
+    <property name="docSubDir" value="doc"/>
+    <property name="binSubDir" value="binSet"/>
+    <property name="packsSubDir" value="packs"/>
+
+    <property name="projectSources" location="${projectHome}/${srcSubDir}"/>
+    <property name="projectDeps" location="${projectHome}/${libSubDir}"/>
     
-    <property name="dirBuild" value="${projectHome}/build"/>
-    <property name="dirBuildExportTo" value="${projectHome}/ypcnv-bin"/>
-    <property name="dirPackExportTo" value="${projectHome}/ypcnv-pack"/>
-    <property name="dirGeneratedDoc" value="${projectHome}/ypcnv-doc"/>
-    <property name="libsSubDir" value="lib"/>
-    <property name="log4jPropJarFullName" value="${projectHome}/lib/log4j.properties.jar"/>
+    <property name="dirBuild" location="${prjBuildSite}/build"/>
+    <property name="dirGeneratedDoc" location="${prjBuildSite}/${docSubDir}"/>
+    <property name="dirBinFullSet" location="${prjBuildSite}/${binSubDir}"/>
+    <property name="dirPackExportTo" location="${prjBuildSite}/${packsSubDir}"/>
+    
+    <property name="log4jPropJarFullName" location="${projectHome}/${libSubDir}/log4j.properties.jar"/>
 
     <target name="create-dtd">
         <antstructure output="ypcnv-ant.dtd.new"/>
     </target>
 
     <target name="clean">
-        <delete dir="${dirBuild}"/>
-        <delete dir="${dirBuildExportTo}"/>
-        <delete dir="${dirGeneratedDoc}"/>
-        <delete dir="${dirPackExportTo}"/>
+        <delete dir="${prjBuildSite}"/>
     </target>
 
-    <target name="init">
+    <target name="init" depends="set-access">
         <mkdir dir="${dirBuild}"/>
     </target>
 
+    <target name="set-access">
+        <echo message="Setting file access flags for '${projectHome}'."/>
+        <exec executable="chmod" dir="${projectHome}" failonerror="true">
+            <arg line="-R go-w '${projectHome}'" />
+        </exec>
+    </target>
 
 	<target name="compile">
 		<javac srcdir="${projectSources}" destdir="${dirBuild}" includeantruntime="false">
             <classpath>
                 <pathelement path="${projectHome}"/>
-                <!-- <pathelement location="${projectHome}/lib/*.jar"/> -->
-                <fileset dir="${projectHome}/lib">
-                    <include name="**/*.jar"/>
+                <fileset dir="${projectHome}/${libSubDir}">
+                    <type type="file"/>
+                    <include name="*.jar"/>
                 </fileset>
             </classpath>
 			<include name="**/*.java" />
@@ -49,98 +61,85 @@
 		</javac>
 	</target>
 
-    <target name="jar">
-        <delete dir="${dirBuildExportTo}"/>
-        <mkdir dir="${dirBuildExportTo}"/>
+    <target name="jar" depends="set-access">
+        <delete dir="${dirBinFullSet}"/>
+        <mkdir dir="${dirBinFullSet}"/>
         <jar destfile="${log4jPropJarFullName}">
             <zipfileset dir="${projectHome}/src/main/resources" includes="log4j.properties"/>
         </jar>
 
-        <jar destfile="${dirBuildExportTo}/ypcnv.jar">
+        <jar destfile="${dirBinFullSet}/ypcnv.jar">
             <manifest>
                 <attribute name="Main-Class" value="ypcnv.converter.main.Main"/>
-                <attribute name="Class-Path" value=". help.txt ${libsSubDir}/cardme-v0.2.6.jar ${libsSubDir}/charva-1.1.4.jar ${libsSubDir}/commons-logging-api.jar ${libsSubDir}/commons-logging.jar ${libsSubDir}/dom4j-1.6.1.jar ${libsSubDir}/java-getopt-1.0.14.jar ${libsSubDir}/log4j-1.2.13.jar ${libsSubDir}/log4j.properties.jar ${libsSubDir}/mime-dir-j-2.1.0-1.jar ${libsSubDir}/org.junit_4.8.2.v4_8_2_v20110321-1705__junit.jar ${libsSubDir}/poi-excelant-3.8-beta4-20110826.jar ${libsSubDir}/poi-ooxml-3.8-beta4-20110826.jar ${libsSubDir}/poi-ooxml-schemas-3.8-beta4-20110826.jar ${libsSubDir}/poi-scratchpad-3.8-beta4-20110826.jar ${libsSubDir}/stax-api-1.0.1.jar ${libsSubDir}/xmlbeans-2.3.0.jar"/>
+                <attribute name="Class-Path" value=". help.txt ${libSubDir}/cardme-v0.2.6.jar ${libSubDir}/charva-1.1.4.jar ${libSubDir}/commons-logging-api.jar ${libSubDir}/commons-logging.jar ${libSubDir}/dom4j-1.6.1.jar ${libSubDir}/java-getopt-1.0.14.jar ${libSubDir}/log4j-1.2.13.jar ${libSubDir}/log4j.properties.jar ${libSubDir}/mime-dir-j-2.1.0-1.jar ${libSubDir}/org.junit_4.8.2.v4_8_2_v20110321-1705__junit.jar 
+                ${libSubDir}/poi-3.8-beta4-20110826.jar
+                ${libSubDir}/poi-excelant-3.8-beta4-20110826.jar ${libSubDir}/poi-ooxml-3.8-beta4-20110826.jar ${libSubDir}/poi-ooxml-schemas-3.8-beta4-20110826.jar ${libSubDir}/poi-scratchpad-3.8-beta4-20110826.jar ${libSubDir}/stax-api-1.0.1.jar ${libSubDir}/xmlbeans-2.3.0.jar"/>
             </manifest>
             <zipfileset dir="${projectHome}" includes="COPYING"/>
             <zipfileset dir="${projectHome}" includes="README"/>
             <zipfileset dir="${projectHome}/src/main/resources" includes="help.txt"/>
-            <fileset dir="${projectHome}/target/classes"/>
+            <fileset dir="${dirBuild}"/>
         </jar>
-        <delete dir="${dirBuildExportTo}/${libsSubDir}"/>
-        <mkdir dir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/COPYING" todir="${dirBuildExportTo}"/>
-        <copy file="${projectHome}/README" todir="${dirBuildExportTo}"/>
-        <copy file="${projectHome}/ypcnv.sh" tofile="${dirBuildExportTo}/ypcnv"/>
-        <copy file="${projectHome}/src/main/resources/ypcnv.svg" todir="${dirBuildExportTo}"/>
-        <copy file="${projectHome}/src/main/resources/ypcnv.desktop" todir="${dirBuildExportTo}"/>
-        <copy todir="${dirBuildExportTo}/${libsSubDir}">
+        <delete dir="${dirBinFullSet}/${libSubDir}"/>
+        <mkdir dir="${dirBinFullSet}/${libSubDir}"/>
+        <copy file="${projectHome}/COPYING" todir="${dirBinFullSet}"/>
+        <copy file="${projectHome}/README" todir="${dirBinFullSet}"/>
+        <copy file="${projectHome}/ypcnv.sh" tofile="${dirBinFullSet}/ypcnv"/>
+        <copy file="${projectHome}/src/main/resources/ypcnv.svg" todir="${dirBinFullSet}"/>
+        <copy file="${projectHome}/src/main/resources/ypcnv.desktop" todir="${dirBinFullSet}"/>
+        <copy todir="${dirBinFullSet}/${libSubDir}">
             <fileset dir="${projectHome}/lib">
                 <include name="*.jar"/>
             </fileset>
         </copy>
-        <copy file="${projectHome}/lib/charva/libTerminal.so" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <exec executable="chmod" dir="${dirBuildExportTo}" failonerror="true">
+        <copy file="${projectHome}/lib/charva/libTerminal.so" todir="${dirBinFullSet}/${libSubDir}"/>
+        <exec executable="chmod" dir="${dirBinFullSet}" failonerror="true">
             <arg line="0755 ypcnv" />
         </exec>
     </target>
 
-    <target name="jar-as-Eclipse">
-        <delete dir="${dirBuildExportTo}"/>
-        <antcall target="dir.pickup">
-            <param name="dirName" value="${dirBuildExportTo}"/>
-        </antcall>
-
-        <delete file="${log4jPropJarFullName}"/>
+    <target name="jar-as-Eclipse" depends="set-access">
+        <delete dir="${dirBinFullSet}"/>
+        <mkdir dir="${dirBinFullSet}"/>
         <jar destfile="${log4jPropJarFullName}">
             <zipfileset dir="${projectHome}/src/main/resources" includes="log4j.properties"/>
         </jar>
 
-        <jar destfile="${dirBuildExportTo}/ypcnv.jar">
+        <jar destfile="${dirBinFullSet}/ypcnv.jar">
             <manifest>
                 <attribute name="Main-Class" value="ypcnv.converter.main.Main"/>
-                <attribute name="Class-Path" value=". help.txt ${libsSubDir}/charva-1.1.4.jar ${libsSubDir}/cardme-src-v0.2.6.jar ${libsSubDir}/cardme-v0.2.6.jar ${libsSubDir}/mime-dir-j-2.1.0-1.jar ${libsSubDir}/java-getopt-1.0.14.jar ${libsSubDir}/poi-3.8-beta4-20110826.jar ${libsSubDir}/poi-examples-3.8-beta4-20110826.jar ${libsSubDir}/poi-excelant-3.8-beta4-20110826.jar ${libsSubDir}/poi-ooxml-3.8-beta4-20110826.jar ${libsSubDir}/poi-ooxml-schemas-3.8-beta4-20110826.jar ${libsSubDir}/poi-scratchpad-3.8-beta4-20110826.jar ${libsSubDir}/commons-logging-1.1.jar ${libsSubDir}/junit-3.8.1.jar ${libsSubDir}/log4j-1.2.13.jar ${libsSubDir}/dom4j-1.6.1.jar ${libsSubDir}/stax-api-1.0.1.jar ${libsSubDir}/xmlbeans-2.3.0.jar ${libsSubDir}/org.junit_4.8.2.v4_8_2_v20110321-1705__junit.jar ${libsSubDir}/log4j.properties.jar"/>
+                <attribute name="Class-Path" value=". help.txt ${libSubDir}/cardme-v0.2.6.jar ${libSubDir}/charva-1.1.4.jar ${libSubDir}/commons-logging-api.jar ${libSubDir}/commons-logging.jar ${libSubDir}/dom4j-1.6.1.jar ${libSubDir}/java-getopt-1.0.14.jar ${libSubDir}/log4j-1.2.13.jar ${libSubDir}/log4j.properties.jar ${libSubDir}/mime-dir-j-2.1.0-1.jar ${libSubDir}/org.junit_4.8.2.v4_8_2_v20110321-1705__junit.jar ${libSubDir}/poi-3.8-beta4-20110826.jar ${libSubDir}/poi-excelant-3.8-beta4-20110826.jar ${libSubDir}/poi-ooxml-3.8-beta4-20110826.jar ${libSubDir}/poi-ooxml-schemas-3.8-beta4-20110826.jar ${libSubDir}/poi-scratchpad-3.8-beta4-20110826.jar ${libSubDir}/stax-api-1.0.1.jar ${libSubDir}/xmlbeans-2.3.0.jar"/>
             </manifest>
             <zipfileset dir="${projectHome}" includes="COPYING"/>
             <zipfileset dir="${projectHome}" includes="README"/>
             <zipfileset dir="${projectHome}/src/main/resources" includes="help.txt"/>
             <fileset dir="${projectHome}/target/classes"/>
+            <fileset dir="${projectHome}/target/test-classes"/>
         </jar>
-        <copy file="${projectHome}/COPYING" todir="${dirBuildExportTo}"/>
-        <copy file="${projectHome}/README" todir="${dirBuildExportTo}"/>
-        <delete dir="${dirBuildExportTo}/${libsSubDir}"/>
-        <mkdir dir="${dirBuildExportTo}/${libsSubDir}"/>
-        
-        
-        <copy file="${projectHome}/ypcnv.sh" tofile="${dirBuildExportTo}/ypcnv"/>
-        <copy file="${projectHome}/src/main/resources/ypcnv.svg" todir="${dirBuildExportTo}"/>
-        <copy file="${projectHome}/src/main/resources/ypcnv.desktop" todir="${dirBuildExportTo}"/>
-
-        <copy file="${projectHome}/lib/charva/libTerminal.so" todir="${dirBuildExportTo}/${libsSubDir}"/>
-       
-        <copy file="${projectHome}/lib/charva/charva-1.1.4.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/cardme/cardme-src-v0.2.6.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/cardme/cardme-v0.2.6.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/cardme/mime-dir-j-2.1.0-1.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/java-gnu-getopt/java-getopt-1.0.14.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/poi/poi-3.8-beta4-20110826.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/poi/poi-examples-3.8-beta4-20110826.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/poi/poi-excelant-3.8-beta4-20110826.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/poi/poi-ooxml-3.8-beta4-20110826.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/poi/poi-ooxml-schemas-3.8-beta4-20110826.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/poi/poi-scratchpad-3.8-beta4-20110826.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/poi/lib/commons-logging-1.1.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/poi/lib/junit-3.8.1.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/poi/lib/log4j-1.2.13.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/poi/ooxml-lib/dom4j-1.6.1.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/poi/ooxml-lib/stax-api-1.0.1.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/poi/ooxml-lib/xmlbeans-2.3.0.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/junit4/org.junit_4.8.2.v4_8_2_v20110321-1705__junit.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        <copy file="${projectHome}/lib/log4j.properties.jar" todir="${dirBuildExportTo}/${libsSubDir}"/>
-        
-        <exec executable="chmod" dir="${dirBuildExportTo}" failonerror="true">
+        <delete dir="${dirBinFullSet}/${libSubDir}"/>
+        <mkdir dir="${dirBinFullSet}/${libSubDir}"/>
+        <copy file="${projectHome}/COPYING" todir="${dirBinFullSet}"/>
+        <copy file="${projectHome}/README" todir="${dirBinFullSet}"/>
+        <copy file="${projectHome}/ypcnv.sh" tofile="${dirBinFullSet}/ypcnv"/>
+        <copy file="${projectHome}/src/main/resources/ypcnv.svg" todir="${dirBinFullSet}"/>
+        <copy file="${projectHome}/src/main/resources/ypcnv.desktop" todir="${dirBinFullSet}"/>
+        <copy todir="${dirBinFullSet}/${libSubDir}">
+            <fileset dir="${projectHome}/lib">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+        <copy file="${projectHome}/lib/charva/libTerminal.so" todir="${dirBinFullSet}/${libSubDir}"/>
+        <exec executable="chmod" dir="${dirBinFullSet}" failonerror="true">
             <arg line="0755 ypcnv" />
         </exec>
+    </target>
 
+    <target name="gen-doc">
+        <delete dir="${dirGeneratedDoc}"/>
+        <mkdir dir="${dirGeneratedDoc}"/>
+        <exec executable="doxygen" dir="${projectHome}" failonerror="true">
+            <arg line="Doxyfile"/>
+        </exec>
     </target>
 
     <target name="pack">
@@ -153,26 +152,23 @@
         <antcall target="pack-doc"/>
         <antcall target="pack-src"/>
         <antcall target="pack-bin"/>
+        <antcall target="pack-deps"/>
     </target>
 
-    <target name="pack-doc" depends="getTimestamp">
-        <delete dir="${dirGeneratedDoc}"/>
-        <exec executable="doxygen" dir="${projectHome}" failonerror="true">
-            <arg line="Doxyfile"/>
-        </exec>
-
+    <target name="pack-doc" depends="gen-doc, set-access, getTimestamp">
+        <property name="docPackName" value="${dirPackExportTo}/ypcnv-${versionTimestamp}-doc.tar.bz2"/>
         <antcall target="dir.pickup">
             <param name="dirName" value="${dirPackExportTo}"/>
         </antcall>
-        <delete file="${dirPackExportTo}/ypcnv-${versionTimestamp}-doc.tar.bz2"/>
-        <tar destfile="${dirPackExportTo}/ypcnv-${versionTimestamp}-doc.tar.bz2" compression="bzip2">
+        <delete file="${docPackName}"/>
+        <tar destfile="${docPackName}" compression="bzip2">
             <tarfileset dir="${dirGeneratedDoc}"
-                        prefix="ypcnv-doc"
+                        prefix="ypcnv/${docSubDir}"
                         preserveLeadingSlashes="false">
                 <include name="**"/>
             </tarfileset>
             <tarfileset dir="${projectHome}"
-                        prefix="ypcnv-doc"
+                        prefix="ypcnv/${docSubDir}"
                         preserveLeadingSlashes="false">
                 <include name="COPYING"/>
                 <include name="README"/>
@@ -180,47 +176,58 @@
         </tar>
         <antcall target="createChkSumForFile">
             <param name="chkSumTargetFile"
-                   value="${dirPackExportTo}/ypcnv-${versionTimestamp}-doc.tar.bz2"/>
+                   value="${docPackName}"/>
         </antcall>
     </target>
 
-    <target name="pack-src" depends="getTimestamp">
+    <target name="pack-src" depends="gen-doc, set-access, getTimestamp">
+        <property name="srcJarName" value="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.jar"/>
+        <property name="srcPackName" value="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.tar.bz2"/>
         <antcall target="dir.pickup">
             <param name="dirName" value="${dirPackExportTo}"/>
         </antcall>
-        <delete file="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.jar"/>
-        <delete file="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.tar.bz2"/>
+        <delete file="${srcJarName}"/>
+        <delete file="${srcPackName}"/>
         
-        <jar destfile="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.jar">
+        <jar destfile="${srcJarName}">
             <zipfileset dir="${projectHome}" includes="COPYING"/>
             <zipfileset dir="${projectHome}" includes="README"/>
-            <fileset dir="${projectSources}"/>
+            <fileset dir="${projectHome}">
+                <include name="${srcSubDir}/**"/>
+            </fileset>
+            <fileset dir="${prjBuildSite}">
+                <include name="${docSubDir}/**"/>
+            </fileset>
         </jar>
-        <tar destfile="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.tar.bz2" basedir="${dirPackExportTo}" includes="ypcnv-${versionTimestamp}-src.jar" compression="bzip2"/>
-        <delete file="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.jar"/>
+        <tar destfile="${srcPackName}" compression="bzip2">
+            <tarfileset dir="${dirBinFullSet}"
+                        file="${srcJarName}"
+                        prefix="ypcnv" preserveLeadingSlashes="false">
+            </tarfileset>
+        </tar>
+        <delete file="${srcJarName}"/>
         <antcall target="createChkSumForFile">
-            <param name="chkSumTargetFile"
-                   value="${dirPackExportTo}/ypcnv-${versionTimestamp}-src.tar.bz2"/>
+            <param name="chkSumTargetFile" value="${srcPackName}"/>
         </antcall>
-
     </target>
     
-    <target name="pack-bin" depends="getTimestamp">
+    <target name="pack-bin" depends="set-access, getTimestamp">
+        <property name="binPackName" value="${dirPackExportTo}/ypcnv-${versionTimestamp}-bin.tar.bz2"/>
         <antcall target="dir.pickup">
             <param name="dirName" value="${dirPackExportTo}"/>
         </antcall>
         <antcall target="jar"/>
-        <delete file="${dirPackExportTo}/ypcnv-${versionTimestamp}-bin.tar.bz2"/>
-        <tar destfile="${dirPackExportTo}/ypcnv-${versionTimestamp}-bin.tar.bz2" compression="bzip2">
+        <delete file="${binPackName}"/>
+        <tar destfile="${binPackName}" compression="bzip2">
 <!--
-            <tarfileset file="${dirBuildExportTo}/ypcnv"
+            <tarfileset file="${dirBinFullSet}/ypcnv"
                         filemode="755"
                         prefix="ypcnv"
                         preserveLeadingSlashes="false"/>
 -->
-            <tarfileset dir="${dirBuildExportTo}" prefix="ypcnv" preserveLeadingSlashes="false">
+            <tarfileset dir="${dirBinFullSet}" prefix="ypcnv" preserveLeadingSlashes="false">
 <!--
-                <exclude name="${dirBuildExportTo}/ypcnv"/>
+                <exclude name="${dirBinFullSet}/ypcnv"/>
 -->
                 <include name="**"/>
             </tarfileset>
@@ -231,12 +238,28 @@
             </tarfileset>
         </tar>
         <antcall target="createChkSumForFile">
-            <param name="chkSumTargetFile"
-                   value="${dirPackExportTo}/ypcnv-${versionTimestamp}-bin.tar.bz2"/>
+            <param name="chkSumTargetFile" value="${binPackName}"/>
         </antcall>
 
     </target>
 
+    <target name="pack-deps" depends="set-access, getTimestamp">
+        <property name="depsPackName" value="${dirPackExportTo}/ypcnv-${versionTimestamp}-dep.tar.bz2"/>
+        <mkdir dir="${dirPackExportTo}"/>
+        <delete file="${depsPackName}"/>
+        <tar destfile="${depsPackName}" compression="bzip2">
+            <tarfileset dir="${projectDeps}" prefix="ypcnv/${libSubDir}" preserveLeadingSlashes="false">
+                <type type="file"/>
+                
+                <include name="*"/>
+                <!-- <depth max="1"/> -->
+                
+            </tarfileset>
+        </tar>
+        <antcall target="createChkSumForFile">
+            <param name="chkSumTargetFile" value="${depsPackName}"/>
+        </antcall>
+    </target>
 
     <target name="dir.pickup"> <!-- Obsolete target. But in use. -->
         <condition property="dir.check.isExists">

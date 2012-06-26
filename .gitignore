@@ -1,10 +1,6 @@
 .repository
 /target
 /bin
-/build
-/ypcnv-bin/
-/ypcnv-doc/
-/ypcnv-pack/
 src/test/resources/ypcnv-*
 /lib/log4j.properties.jar
 /lib/*/*
@@ -18,5 +14,6 @@ hs_err_pid*.log
 .settings
 .metadata
 .idea
-/javadoc
-misc/
+/build-site/
+/javadoc/
+/misc/

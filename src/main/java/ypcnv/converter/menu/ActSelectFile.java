@@ -29,11 +29,11 @@ import charva.awt.Component;
 import charvax.swing.JFileChooser;
 
 /** File selection dialog. */
-public class SelectFile {
+public class ActSelectFile {
     
     /** Logger. */
     @SuppressWarnings("unused")
-    private static final Log LOG = LogFactory.getLog(SelectFile.class);
+    private static final Log LOG = LogFactory.getLog(ActSelectFile.class);
 
     /**
      * Dialog launcher.

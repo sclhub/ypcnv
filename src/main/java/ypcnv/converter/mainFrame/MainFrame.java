@@ -36,25 +36,24 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ypcnv.converter.conf.DataSourceConf;
-import ypcnv.converter.main.Converter;
-import ypcnv.converter.menu.AboutPanel;
-import ypcnv.converter.menu.HelpPanel;
-import ypcnv.converter.menu.SelectDataSourceFormat;
-import ypcnv.converter.menu.SelectFile;
+import ypcnv.converter.menu.ActAboutPanel;
+import ypcnv.converter.menu.ConstructMainMenu;
+import ypcnv.converter.menu.ActConversionProcess;
+import ypcnv.converter.menu.ActHelpPanel;
+import ypcnv.converter.menu.ActSelectDataSourceFormat;
+import ypcnv.converter.menu.ActSelectFile;
 import ypcnv.converter.menu.UIMetaData;
 import ypcnv.errorCodes.ErrorCodes;
-import ypcnv.views.abstr.DataFormatID;
+import ypcnv.helpers.GBC;
 import ypcnv.views.abstr.Side;
 import charva.awt.Container;
-import charva.awt.GridBagConstraints;
 import charva.awt.GridBagLayout;
 import charva.awt.Toolkit;
 import charva.awt.event.ActionEvent;
 import charva.awt.event.ActionListener;
+import charva.awt.event.WindowEvent;
+import charva.awt.event.WindowListener;
 import charvax.swing.JFrame;
-import charvax.swing.JMenu;
-import charvax.swing.JMenuBar;
-import charvax.swing.JMenuItem;
 import charvax.swing.JOptionPane;
 
 
@@ -62,7 +61,8 @@ import charvax.swing.JOptionPane;
  * Main frame of visual UI.
  */
 public class MainFrame extends JFrame
-                       implements ActionListener {
+                       implements ActionListener,
+                                  WindowListener {
 
     
     /** Logger. */
@@ -89,10 +89,8 @@ public class MainFrame extends JFrame
     /** Panel with hints and similar. */
     private HintPanel hintPanel = null ;
 
-    /* Miscellaneous panels to be called. */
-
     /** File selection dialog. */
-    private SelectDataSourceFormat selectFileFormatPane = null ;
+    private ActSelectDataSourceFormat selectFileFormatPane = null ;
 
     MainFrame() {
         super("> YPCnv <");
@@ -114,83 +112,14 @@ public class MainFrame extends JFrame
 //        return lastUsedrFileObject;
 //    }
 
-    /** Setup main farme. */
+    /** Setup main frame. */
     private void initMainFrame() {
         setForeground(UIMetaData.colorFG);
         setBackground(UIMetaData.colorBG);
         Container contentPane = getContentPane();
         contentPane.setLayout(new GridBagLayout());
 
-        // XXX - menu is a UI object. Why not to extract into separate class?
-        // XXX - package named "menu" contains several panels.
-        /// Main menu bar.
-        JMenuBar menubar = new JMenuBar();
-
-        /* * */
-
-        JMenu jMenuFile = new JMenu(MainFrameMeta.Menu.file);
-        jMenuFile.setMnemonic(MainFrameMeta.Menu.fileMn);
-
-        JMenuItem jMenuItemInputFileChooser
-                    = new JMenuItem(MainFrameMeta.Menu.fileSelectIn,
-                                    MainFrameMeta.Menu.fileSelectInMn);
-        jMenuItemInputFileChooser.addActionListener(this);
-        jMenuFile.add(jMenuItemInputFileChooser);
-
-        JMenuItem jMenuItemOutputFileChooser
-                    = new JMenuItem(MainFrameMeta.Menu.fileSelectOut,
-                                    MainFrameMeta.Menu.fileSelectOutMn);
-        jMenuItemOutputFileChooser.addActionListener(this);
-        jMenuFile.add(jMenuItemOutputFileChooser);
-
-        jMenuFile.addSeparator();
-
-        JMenuItem jMenuItemFileExit = new JMenuItem(MainFrameMeta.Menu.exit,
-                                                    MainFrameMeta.Menu.exitMn);
-        jMenuItemFileExit.addActionListener(this);
-        jMenuFile.add(jMenuItemFileExit);
-
-        /* * */
-
-        JMenu jMenuConfig = new JMenu(MainFrameMeta.Menu.configure);
-        jMenuConfig.setMnemonic(MainFrameMeta.Menu.configureMn);
-
-        JMenuItem jMenuItemSelectFormat = new JMenuItem(MainFrameMeta.Menu.format,
-                                                        MainFrameMeta.Menu.formatMn);
-        jMenuItemSelectFormat.addActionListener(this);
-        jMenuConfig.add(jMenuItemSelectFormat);
-
-        /* * */
-
-        JMenu jMenuActions = new JMenu(MainFrameMeta.Menu.actions);
-        jMenuConfig.setMnemonic(MainFrameMeta.Menu.actionsMn);
-
-        JMenuItem jMenuItemConvert = new JMenuItem(MainFrameMeta.Menu.convert,
-                                                    MainFrameMeta.Menu.convertMn);
-        jMenuItemConvert.addActionListener(this);
-        jMenuActions.add(jMenuItemConvert);
-
-        /* * */
-        
-        JMenu jMenuInfo = new JMenu(MainFrameMeta.Menu.info);
-        jMenuInfo.setMnemonic(MainFrameMeta.Menu.infoMn);
-
-        JMenuItem jMenuItemHelp = new JMenuItem(MainFrameMeta.Menu.help,
-                                                MainFrameMeta.Menu.helpMn);
-        jMenuItemHelp.addActionListener(this);
-        jMenuInfo.add(jMenuItemHelp);
-
-        JMenuItem jMenuItemAbout = new JMenuItem(MainFrameMeta.Menu.about,
-                                                MainFrameMeta.Menu.aboutMn);
-        jMenuItemAbout.addActionListener(this);
-        jMenuInfo.add(jMenuItemAbout);
-
-        menubar.add(jMenuFile);
-        menubar.add(jMenuConfig);
-        menubar.add(jMenuActions);
-        menubar.add(jMenuInfo);
-
-        setJMenuBar(menubar);
+        setJMenuBar(ConstructMainMenu.construct(this));
 
         Object donorAddress = srcObjectConfig.getObjectAddress() ;
         Object acceptorAddress = dstObjectConfig.getObjectAddress() ;
@@ -201,39 +130,29 @@ public class MainFrame extends JFrame
             acceptorAddress = "";
         }
         
-        inFileNamePanel = new ChoosenFilePanel(MainFrameMeta.SRC_INFO_PANEL_HEADER
-                               +" <",
-                               donorAddress.toString());
-        outFileNamePanel = new ChoosenFilePanel(MainFrameMeta.DST_INFO_PANEL_HEADER
-                                + " <",
-                                acceptorAddress.toString());
+        String header ; 
+        header = new String(MainFrameMeta.SRC_INFO_PANEL_HEADER + " - "
+                + srcObjectConfig.getObjectFormat() + " "
+                + MainFrameMeta.SRC_INFO_PANEL_HEADER_SUFFIX + " <");
+        inFileNamePanel = new ChoosenFilePanel(header,
+                                               donorAddress.toString());
+        header = new String(MainFrameMeta.DST_INFO_PANEL_HEADER + " - "
+                + dstObjectConfig.getObjectFormat() + " "
+                + MainFrameMeta.DST_INFO_PANEL_HEADER_SUFFIX + " <");
+        outFileNamePanel = new ChoosenFilePanel(header,
+                                                acceptorAddress.toString());
+        
         messagePanel = new MessagePanel(MainFrameMeta.messagePanelContent);
         hintPanel = new HintPanel(MainFrameMeta.hintPanelText);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.gridwidth = 5;
-        gbc.gridheight = 1;
+        GBC gbc = new GBC();
+        gbc.setGBC(1,0,5,1);
         contentPane.add(inFileNamePanel, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.gridwidth = 5;
-        gbc.gridheight = 1;
+        gbc.setGBC(1,1,5,1);
         contentPane.add(outFileNamePanel, gbc);
-        
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 5;
-        gbc.gridheight = 1;
+        gbc.setGBC(0,2,5,1);
         contentPane.add(messagePanel, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 5;
-        gbc.gridheight = 1;
+        gbc.setGBC(0,3,5,1);
         contentPane.add(hintPanel, gbc);
 
         setLocation(0, 0);
@@ -244,27 +163,21 @@ public class MainFrame extends JFrame
 
     }
     
-    // XXX - split into separated methods or classes?
     /** Main frame's action and event listener. */
     @Override
     public void actionPerformed(ActionEvent ae_) {
         String actionCommand = ae_.getActionCommand();
         if (actionCommand.equals(MainFrameMeta.Menu.exit))
         {
-            LOG.debug("On exit have formats: source "
-                        + srcObjectConfig.getObjectFormat()
-                        + ", destination "
-                        + dstObjectConfig.getObjectFormat());
             System.gc();    // So that Heap/CPU Profiling Tool reports only live objects.
             System.exit(ErrorCodes.OK.get());
         } else if (actionCommand.equals(MainFrameMeta.Menu.fileSelectIn))
         {
-            File newAddress = SelectFile.selectFileDialog(
+            File newAddress = ActSelectFile.selectFileDialog(
                                     this, 
                                     UIMetaData.FileSelect.headerDonor,
                                     null,
                                     srcObjectConfig);
-            LOG.debug("Choosen input file (null is Cancel pressed): " + newAddress);
             if(newAddress != null) {
                 srcObjectConfig.setObjectAddress(newAddress);
                 inFileNamePanel.setContent(srcObjectConfig.getObjectAddress().toString());
@@ -272,7 +185,7 @@ public class MainFrame extends JFrame
             }
         } else if (actionCommand.equals(MainFrameMeta.Menu.fileSelectOut))
         {
-            File newAddress = SelectFile.selectFileDialog(
+            File newAddress = ActSelectFile.selectFileDialog(
                                     this,
                                     UIMetaData.FileSelect.headerAcceptor,
                                     null,
@@ -284,120 +197,31 @@ public class MainFrame extends JFrame
             }
         } else if (actionCommand.equals(MainFrameMeta.Menu.format))
         {
-            LOG.debug("Going with source and destination: "
-                        + srcObjectConfig
-                        + " ; "
-                        + dstObjectConfig);
             ArrayList<DataSourceConf> ar = new ArrayList<DataSourceConf>();
             ar.add(srcObjectConfig);
             ar.add(dstObjectConfig);
-            selectFileFormatPane = new SelectDataSourceFormat(this, ar);
+            selectFileFormatPane = new ActSelectDataSourceFormat(this, ar);
             selectFileFormatPane.show();
-            LOG.debug("After format selection have parameters: "
-                    + srcObjectConfig.toString()
-                    + ", destination "
-                    + dstObjectConfig.toString());
         } else if (actionCommand.equals(MainFrameMeta.Menu.convert))
         {
 
             ArrayList<DataSourceConf> ar = new ArrayList<DataSourceConf>(
                     Arrays.asList(srcObjectConfig, dstObjectConfig));
-            for(DataSourceConf config : ar) {
-                if((config.getSide() == Side.source
-                        && config.getObjectFormat() != DataFormatID.XLS)
-                    ||
-                    (config.getSide() == Side.destination
-                        && config.getObjectFormat() != DataFormatID.VCF))
-                {
-                    String msg = "Terra incognita in front. Stopping for debug.";
-                    LOG.info(msg);
-                    JOptionPane.showMessageDialog(this,
-                            msg, "> YPCnv <" , JOptionPane.PLAIN_MESSAGE);
-                    Toolkit.getDefaultToolkit().triggerGarbageCollection(this);
-                    return ;
-                }
-            }
-
-            Boolean isConfComplete = false;
-            Boolean haveSource = false;
-            Boolean haveDestination = false;
-            
-            Iterator<DataSourceConf> confsListIterator = ar.iterator();
-            while(confsListIterator.hasNext()) {
-                DataSourceConf config = confsListIterator.next();
-                if(config.isComplete()) {
-                    if (config.getSide() == Side.source ) {
-                        haveSource = true;
-                    }
-                    if (config.getSide() == Side.destination ) {
-                        haveDestination = true;
-                    }
-                }
-            }
-
-            if(haveSource && haveDestination) {
-                isConfComplete = true ;
-            }
-            
-            if(isConfComplete) {
-                Converter cnv = new Converter(ar);
-                try {
-                    cnv.processConversion();
-                } catch (Exception e) {
-                    LOG.error("Failed to convert. Parameters were: "
-                            + srcObjectConfig.toString()
-                            + ", destination "
-                            + dstObjectConfig.toString());
-                    e.printStackTrace();
-                }
-                String msg = "Conversion done.";
-                LOG.info(msg);
-                JOptionPane.showMessageDialog(this,
-                        msg, "> YPCnv <" , JOptionPane.PLAIN_MESSAGE);
-                //Toolkit.getDefaultToolkit().triggerGarbageCollection(this);
-                System.gc();
-            }
+            ActConversionProcess convProcessPanel = new ActConversionProcess(this, ar);
+            convProcessPanel.show();
         } else if (actionCommand.equals(MainFrameMeta.Menu.help))
         {
-            LOG.debug("Help panel start.");
-            HelpPanel helpPanel = new HelpPanel(this);
-            helpPanel.show();
-            LOG.debug("Help panel done.");
+            ActHelpPanel actHelpPanel = new ActHelpPanel(this);
+            actHelpPanel.show();
         } else if (actionCommand.equals(MainFrameMeta.Menu.about))
         {
-            AboutPanel aboutPanel = new AboutPanel(this);
-            aboutPanel.show();
-        } else if (actionCommand.equals(MainFrameMeta.Events.dataFormatsRefreshed))
-        {
-            ArrayList<DataSourceConf> ar = selectFileFormatPane.getRequestedConvParam();
-            for(DataSourceConf config : ar) {
-                String hdr ;
-                switch(config.getSide()) {
-                case source:
-                    hdr = MainFrameMeta.SRC_INFO_PANEL_HEADER
-                            + " - " + config.getObjectFormat() + " format <";
-                    inFileNamePanel.setHeader(hdr);
-                    inFileNamePanel.repaint();
-                    break;
-                case destination:
-                    hdr = MainFrameMeta.DST_INFO_PANEL_HEADER
-                            + " - " + config.getObjectFormat() + " format <";
-                    outFileNamePanel.setHeader(hdr);
-                    outFileNamePanel.repaint();
-                    break;
-                }
-            }
-//        } else if (actionCommand.equals(MainFrameMeta.Events.dataDonorAddressRefreshed))
-//        {
-//            inFileNamePanel.setContent(srcObjectConfig.getObjectAddress().toString());
-//        } else if (actionCommand.equals(MainFrameMeta.Events.dataAcceptorAddressRefreshed))
-//        {
-//            outFileNamePanel.setContent(dstObjectConfig.getObjectAddress().toString());
+            ActAboutPanel actAboutPanel = new ActAboutPanel(this);
+            actAboutPanel.show();
         } else {
-            LOG.error("Menu item '" + actionCommand + "' not implemented.");
-            JOptionPane.showMessageDialog(this,
-                    "Menu item '" + actionCommand + "' not implemented.",
-                    "Error", JOptionPane.PLAIN_MESSAGE);
+            String message = "Menu item '" + actionCommand + "' not implemented.";
+            LOG.error(message);
+            JOptionPane.showMessageDialog(this, message,
+                                            "Error", JOptionPane.PLAIN_MESSAGE);
         }
         Toolkit.getDefaultToolkit().triggerGarbageCollection(this);
     }
@@ -461,4 +285,53 @@ public class MainFrame extends JFrame
         confsList.add(dstObjectConfig);
 
     }
+
+    /* (non-Javadoc)
+     * @see charva.awt.event.WindowListener#windowClosing(charva.awt.event.WindowEvent)
+     */
+    @Override
+    public void windowClosing(WindowEvent we) {
+        String sourceName =  we.getSource().getClass().getName();
+        if(sourceName.equals(ActSelectDataSourceFormat.class.getName()))
+        {
+            ArrayList<DataSourceConf> ar = selectFileFormatPane.getRequestedConvParam();
+            for(DataSourceConf config : ar) {
+                String hdr ;
+                switch(config.getSide()) {
+                case source:
+                    hdr = MainFrameMeta.SRC_INFO_PANEL_HEADER
+                            + " - " + config.getObjectFormat()
+                            + " "
+                            + MainFrameMeta.SRC_INFO_PANEL_HEADER_SUFFIX
+                            + " <";
+                    inFileNamePanel.setHeader(hdr);
+                    inFileNamePanel.repaint();
+                    break;
+                case destination:
+                    hdr = MainFrameMeta.DST_INFO_PANEL_HEADER
+                            + " - " + config.getObjectFormat()
+                            + " "
+                            + MainFrameMeta.DST_INFO_PANEL_HEADER_SUFFIX
+                            + " <";
+                    outFileNamePanel.setHeader(hdr);
+                    outFileNamePanel.repaint();
+                    break;
+                }
+            }
+        } else if(sourceName.equals(ActConversionProcess.class.getName()))
+        {
+            String msg = MainFrameMeta.Messages.conversionDone;
+            JOptionPane.showMessageDialog(this,
+                    msg, "> YPCnv <" , JOptionPane.PLAIN_MESSAGE);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see charva.awt.event.WindowListener#windowOpened(charva.awt.event.WindowEvent)
+     */
+    @Override
+    public void windowOpened(WindowEvent arg0) {
+        return;
+    }
+    
 }

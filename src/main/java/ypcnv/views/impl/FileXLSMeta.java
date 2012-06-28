@@ -28,7 +28,6 @@ package ypcnv.views.impl;
  */
 public final class FileXLSMeta {
 
-    // XXX - this is info concerning single contact("visit card") implementation and should be moved out of here.
     /** Width of e-table's work sheet. */
     public static final int NUMBER_OF_DATA_FIELDS = 92;
 

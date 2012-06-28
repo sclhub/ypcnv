@@ -19,6 +19,10 @@
  */
 package ypcnv.converter.menu;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,16 +37,17 @@ import charvax.swing.BoxLayout;
 import charvax.swing.JButton;
 import charvax.swing.JDialog;
 import charvax.swing.JLabel;
+import charvax.swing.JOptionPane;
 import charvax.swing.JPanel;
 import charvax.swing.JScrollPane;
 import charvax.swing.JTextArea;
 import charvax.swing.border.LineBorder;
 
-/** About and credits panel. */
-public class AboutPanel extends JDialog implements ActionListener {
+/** Help and credits panel. */
+public class ActHelpPanel extends JDialog implements ActionListener {
 
     /** Logger. */
-    private static final Log LOG = LogFactory.getLog(AboutPanel.class);
+    private static final Log LOG = LogFactory.getLog(ActHelpPanel.class);
 
     private Point topLeftCorner = new Point(2, 3);
 
@@ -50,21 +55,26 @@ public class AboutPanel extends JDialog implements ActionListener {
      * Setup frame.
      * @param owner - parent frame object.
      */
-    public AboutPanel(Frame owner) {
-        super(owner, "> " + UIMetaData.About.header +" <");
+    public ActHelpPanel(Frame owner) {
+        super(owner, "> " + UIMetaData.Help.header +" <");
         
         /** Canvas frame. */
         Container aboutPanelContainer = getContentPane();
-
+        aboutPanelContainer.setBackground(UIMetaData.colorBG);
+        aboutPanelContainer.setForeground(UIMetaData.colorFG);
+        
         /** Frame with content panel. */
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.add(new TextAreaPanel());
-
+        contentPanel.setBackground(UIMetaData.colorBG);
+        contentPanel.setForeground(UIMetaData.colorFG);
+        contentPanel.setBorder(new LineBorder(UIMetaData.colorFG));
+        
         /** Hint panel. */
         JPanel hintPanel = new JPanel();
         hintPanel.setLayout(new BoxLayout(hintPanel, BoxLayout.Y_AXIS));
-        hintPanel.add(new JLabel(""));
+        hintPanel.add(new JLabel(""));// XXX - extract to Meta
         hintPanel.add(new JLabel("Use cursor UP and DOWN keys to scroll."));
         hintPanel.add(new JLabel("Use TAB key to move input focus."));
         hintPanel.add(new JLabel(""));
@@ -72,7 +82,7 @@ public class AboutPanel extends JDialog implements ActionListener {
         /** Button panel. */
         JPanel buttonPanel = new JPanel();
         /** OK and close button. */
-        JButton okButton = new JButton(UIMetaData.About.okButtonId);
+        JButton okButton = new JButton(UIMetaData.Help.okButtonId);
         okButton.addActionListener(this);
         buttonPanel.add(okButton);
 
@@ -81,6 +91,7 @@ public class AboutPanel extends JDialog implements ActionListener {
         aboutPanelContainer.add(buttonPanel, BorderLayout.SOUTH);
 
         aboutPanelContainer.setLocation(topLeftCorner);
+
         pack();
 
     }
@@ -88,9 +99,8 @@ public class AboutPanel extends JDialog implements ActionListener {
     /** Action and event listener. */
     @Override
     public void actionPerformed(ActionEvent ae_) {
-        if (ae_.getActionCommand().equals(UIMetaData.About.okButtonId)) {
+        if (ae_.getActionCommand().equals(UIMetaData.Help.okButtonId)) {
             hide();
-            LOG.debug("Hide AboutPanel done.");
         }
     }
 
@@ -114,7 +124,8 @@ public class AboutPanel extends JDialog implements ActionListener {
                 textAreaWidth = maximumTextAreaWidth;
             }
             
-            contentTextArea = new JTextArea(UIMetaData.About.content
+            StringBuilder content = new StringBuilder(loadContent());
+            contentTextArea = new JTextArea(content.toString()
                                         , textAreaHeight, textAreaWidth);
             contentTextArea.setEditable(false);
             contentTextArea.setLineWrap(true);
@@ -125,9 +136,54 @@ public class AboutPanel extends JDialog implements ActionListener {
             JScrollPane scrollpane = new JScrollPane(contentTextArea);
             scrollpane.setViewportBorder(new LineBorder(UIMetaData.colorFG));
             scrollpane.setBackground(UIMetaData.colorScrollCursor);
-
+            
             add(scrollpane, BorderLayout.NORTH);
         }
 
+    }
+
+    private String loadContent() {
+        StringBuilder content = new StringBuilder();
+        String lineSep = System.getProperty("line.separator");
+        String bf ;
+        
+        InputStream is = null ;
+        BufferedReader br = null ;
+        try {
+            is = getClass().getClassLoader()
+                    .getResourceAsStream(UIMetaData.Help.contentAddress);
+            if (is == null) {
+                String message = String.format(
+                        UIMetaData.Help.FAILED_TO_READ_FROM,
+                        UIMetaData.Help.contentAddress);
+                LOG.error(message);
+                JOptionPane.showMessageDialog(this, message, "> YPCnv <",
+                        JOptionPane.PLAIN_MESSAGE);
+                return "";
+            }
+            br = new BufferedReader(new InputStreamReader(is));
+            while ((bf = br.readLine()) != null) {
+                content.append(bf + lineSep);
+            }
+            
+        } catch (Exception e) {
+            String message = String.format(UIMetaData.Help.FAILED_TO_READ_FROM,
+                    UIMetaData.Help.contentAddress);
+            LOG.error(message);
+            JOptionPane.showMessageDialog(this,
+            message, "> YPCnv <" , JOptionPane.PLAIN_MESSAGE);
+            e.printStackTrace();
+        } finally {
+            try {
+                if(br != null ) { br.close(); }
+                if(is != null ) { is.close(); }
+            } catch (Exception e) {
+                String message = String.format(UIMetaData.Help.FAILED_TO_READ_FROM,
+                        UIMetaData.Help.contentAddress);
+                LOG.error(message);
+                e.printStackTrace();
+            }
+        }
+        return content.toString();
     }
 }

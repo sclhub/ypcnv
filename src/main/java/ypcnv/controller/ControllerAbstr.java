@@ -32,13 +32,13 @@ import ypcnv.views.ifHi.DataSource;
 
 
 /**
- * Controller in MVC pattern.
+ * ControllerAbstr in MVC pattern.
  */
-abstract public class Controller {
+abstract public class ControllerAbstr {
 
     /** Logger. */
     @SuppressWarnings("unused")
-    private static final Log LOG = LogFactory.getLog(Controller.class);
+    private static final Log LOG = LogFactory.getLog(ControllerAbstr.class);
 
     /** Storage of contacts. */
     protected final ContactsBook contactsBook = new ContactsBook();

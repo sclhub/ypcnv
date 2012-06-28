@@ -27,12 +27,10 @@ import org.apache.commons.logging.LogFactory;
 
 import ypcnv.converter.conf.DataSourceConf;
 import ypcnv.converter.mainFrame.MainFrame;
-import ypcnv.converter.mainFrame.MainFrameMeta;
 import ypcnv.helpers.EnumHelper;
 import ypcnv.views.abstr.DataFormatID;
 import ypcnv.views.abstr.Side;
 import charva.awt.BorderLayout;
-import charva.awt.Component;
 import charva.awt.Container;
 import charva.awt.Font;
 import charva.awt.Point;
@@ -54,13 +52,14 @@ import charvax.swing.event.ListSelectionEvent;
 import charvax.swing.event.ListSelectionListener;
 
 /** Select data sources formats frame. */
-public class SelectDataSourceFormat extends JDialog implements ActionListener {
+public class ActSelectDataSourceFormat extends JDialog implements ActionListener {
 
     /** Logger */
-    private static final Log LOG = LogFactory.getLog(SelectDataSourceFormat.class);
+    private static final Log LOG = LogFactory.getLog(ActSelectDataSourceFormat.class);
 
-    /** Parent frame. */
-    private MainFrame owner ;
+    //  /** Parent frame. */
+    //  private MainFrame owner ;
+    
     /** Data sources configurations to be processed. */
     private ArrayList<DataSourceConf> confsList ;
     
@@ -87,9 +86,9 @@ public class SelectDataSourceFormat extends JDialog implements ActionListener {
      * @param owner - parent frame.
      * @param confsList - list of configurations to work with.
      */
-    public SelectDataSourceFormat(MainFrame owner, ArrayList<DataSourceConf> confsList) {
+    public ActSelectDataSourceFormat(MainFrame owner, ArrayList<DataSourceConf> confsList) {
         super(owner, "> " + UIMetaData.SelectFormat.header + " <");
-        this.owner = owner ;
+        //this.owner = owner ;
         this.confsList = confsList;
         initSelectDataSourceFormat(owner);
     }
@@ -98,11 +97,11 @@ public class SelectDataSourceFormat extends JDialog implements ActionListener {
      * Setup frame.
      * @param owner - parent component.
      */
-    private void initSelectDataSourceFormat(Component owner) {
+    private void initSelectDataSourceFormat(MainFrame owner) {
         Container selectFormatPaneContainer = getContentPane();
         selectFormatPaneContainer.setBackground(UIMetaData.colorBG);
         
-        JPanel hintPanel = new HintPanel(UIMetaData.SelectFormat.hint);
+        JPanel hintPanel = new HintPane(UIMetaData.SelectFormat.hint);
         
         /* * */
         
@@ -152,6 +151,7 @@ public class SelectDataSourceFormat extends JDialog implements ActionListener {
         selectFormatPaneContainer.setWidth( UIMetaData.dialogCommonSize.x );
         selectFormatPaneContainer.setHeight( UIMetaData.dialogCommonSize.y );
 
+        addWindowListener(owner);
         pack();
     }
 
@@ -160,7 +160,7 @@ public class SelectDataSourceFormat extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent ae_) {
         if (ae_.getActionCommand().equals(UIMetaData.SelectFormat.okButtonId)) {
             hide();
-            owner.actionPerformed(new ActionEvent(this, MainFrameMeta.Events.dataFormatsRefreshed));
+            //owner.actionPerformed(new ActionEvent(this, MainFrameMeta.Events.dataFormatsRefreshed));
         }
     }
     
@@ -232,7 +232,6 @@ public class SelectDataSourceFormat extends JDialog implements ActionListener {
             add(choosenItemsPanel, BorderLayout.SOUTH);
 
             pack();
-            
         }
 
         /**

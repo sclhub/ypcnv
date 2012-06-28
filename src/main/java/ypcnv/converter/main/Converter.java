@@ -131,7 +131,7 @@ public class Converter {
         dstObject.setDataContainer(srcObject.getDataContainer());
         contactBookController.export(dstObject);
 
-        LOG.info("Conversion done.");
+        LOG.info("Conversion is done.");
 
         return true ;
     }

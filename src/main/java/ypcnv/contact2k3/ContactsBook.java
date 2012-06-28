@@ -107,10 +107,10 @@ public class ContactsBook {
      */
     private String toString(ToStringFullness fulnessType) {
         StringBuilder stringRepresentation = new StringBuilder();
-        final String IN_STRING_DELIMETER = "\n" ; // XXX - new line may be significant for a log parsers. 
+        final String IN_STRING_DELIMETER = " ; " ; // New line as delimiter may be significant for a log parsers. 
 
         Iterator<Contact2k3> contactsIterator = contactsList.iterator();
-        stringRepresentation.append("ContactsBook :[\n");
+        stringRepresentation.append("ContactsBook :[ ");
         while(contactsIterator.hasNext()) {
             String contactFieldValue = null ;
             switch (fulnessType) {

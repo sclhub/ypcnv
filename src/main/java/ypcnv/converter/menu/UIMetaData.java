@@ -42,9 +42,43 @@ public class UIMetaData {
     public static final Color colorFGHi = new Color(255,255,255) ;
     
     public static final Color colorScrollCursor = Color.magenta ;
+
+    
+    
+    
+    /* * */
+
+    
+    
+    
+    public class ConverPanel {
+        /** Frame header. */
+        public static final String header = "YPCnv";
+        /** Progress bar label. */
+        public static final String progressBarLabel = " processing";
+        /** Progress bar iteration time delta. */
+        public static final long progressBarTime = 3333L ;
+
+        //  public static final String doneMessage = " Conversion is done. ";
+        /** Message. */
+        public static final String notImplementedMessage = "Unimplemented formats combination. Try XLS -> VCF.";
+        
+        /** Button identifier and label. */
+        public static final String cancelButtonId = "Cancel" ;
+
+        //  /** Terminate processes event. */
+        //  public static final String terminateProc = "terminate processes, ActConversionProcess panel" ;
+        /** Process done event. */
+        public static final String processDone = "process is done, ActConversionProcess panel" ;
+    }
+    
+    
+    
+    /* * */
     
     /** Data source format selection frame. */
     public class SelectFormat {
+        /** Frame header. */
         public static final String header = "Select formats:";
         /** Formats names list header for UI. */
         public static final String listHeaderSrc="Source";
@@ -86,7 +120,7 @@ public class UIMetaData {
     
     /** "Help" frame. */
     public class Help {
-        /** HelpPanel header. */
+        /** ActHelpPanel header. */
         public static final String header = "Help YPCnv";
         public static final String contentAddress = "help.txt";
         
@@ -96,10 +130,10 @@ public class UIMetaData {
     
     /** "About" frame. */
     public class About {
-        /** AboutPanel header. */
+        /** ActAboutPanel header. */
         public static final String header = "About YPCnv";
         public static final String okButtonId = "OK" ;
-        /** AboutPanel content. */
+        /** ActAboutPanel content. */
         public static final String content =
             "\n"
             + "Copyright 2011-2012 ASCH"

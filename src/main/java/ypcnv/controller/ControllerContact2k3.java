@@ -32,7 +32,7 @@ import ypcnv.views.ifHi.DataSource;
 import ypcnv.views.impl.FileXLS;
 
 
-public class ControllerContact2k3 extends Controller {
+public class ControllerContact2k3 extends ControllerAbstr {
 
     /** Logger. */
     private static final Log LOG = LogFactory.getLog(ControllerContact2k3.class);

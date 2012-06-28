@@ -29,14 +29,18 @@ package ypcnv.converter.mainFrame;
 public final class MainFrameMeta {
 
     /** Header for data donor configuration indicator. */
-    public static final String SRC_INFO_PANEL_HEADER = "> source";
+    public static final String SRC_INFO_PANEL_HEADER = "source";
+    /** Header for data donor configuration indicator. */
+    public static final String SRC_INFO_PANEL_HEADER_SUFFIX = "format";
     /** Header for data acceptor configuration indicator. */
-    public static final String DST_INFO_PANEL_HEADER = "> destination";
+    public static final String DST_INFO_PANEL_HEADER = "destination";
+    /** Header for data acceptor configuration indicator. */
+    public static final String DST_INFO_PANEL_HEADER_SUFFIX = "format";
     
-    /// Message panel initial content.
+    /** Message panel initial content. */
     public static final String messagePanelContent = "...";
     
-    /// Hint panel initial content.
+    /** Hint panel initial content. */
     public static final String hintPanelText=
             "Use LEFT and RIGHT cursor keys to select a menu."
             + " Use ENTER to invoke a menu or menu-item,"
@@ -83,9 +87,20 @@ public final class MainFrameMeta {
 
     }
     
+    /** Events identifiers. */
     public static class Events {
-        public static final String dataFormatsRefreshed = "data source formats refreshed";
+        //public static final String dataFormatsRefreshed = "data source formats refreshed";
         //public static final String dataDonorAddressRefreshed = "data donor address refreshed";
         //public static final String dataAcceptorAddressRefreshed = "data acceptor address refreshed";
+        //public static final String conversionDone = "conversion is done";
+
     }
+
+    /** Several messages. */
+    public static class Messages {
+        
+        /** UI message. */
+        public static final String conversionDone = "Finished.";
+    }
+
 }

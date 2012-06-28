@@ -166,7 +166,7 @@ public class FileVCF extends DataSourceAbstractImpl implements FileSystem {
         // TODO - need implementation of split a single VCF into several vCards.
         Iterator<VCard> vCardsListIterator= vCardsList.iterator();
         while(vCardsListIterator.hasNext()){
-            // XXX - set up of a model from vCards is not implemented at all.
+            // XXX - set up a model from vCards is not implemented at all.
             return;
         }
     }

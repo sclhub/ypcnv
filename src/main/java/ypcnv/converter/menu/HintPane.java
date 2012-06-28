@@ -28,16 +28,19 @@ import charvax.swing.JScrollPane;
 import charvax.swing.JTextArea;
 import charvax.swing.border.EmptyBorder;
 
-/** Hint panel. */
-public class HintPanel extends JPanel {
+/** Hint pane for several frames. */
+public class HintPane extends JPanel {
     /** Logger */
     @SuppressWarnings("unused")
-    private static final Log LOG = LogFactory.getLog(HintPanel.class);
+    private static final Log LOG = LogFactory.getLog(HintPane.class);
     
     /** Panel with content. */
     private JTextArea textArea ;
 
-    HintPanel(String panelText) {
+    /**
+     * @param panelText - Text content of this pane.  
+     */
+    HintPane(String panelText) {
         initHintPanel(panelText);
     }
     

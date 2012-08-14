@@ -20,12 +20,12 @@
 
     <property name="projectSources" location="${projectHome}/${srcSubDir}"/>
     <property name="projectDeps" location="${projectHome}/${libSubDir}"/>
-    
+
     <property name="dirBuild" location="${prjBuildSite}/build"/>
     <property name="dirGeneratedDoc" location="${prjBuildSite}/${docSubDir}"/>
     <property name="dirBinFullSet" location="${prjBuildSite}/${binSubDir}"/>
     <property name="dirPackExportTo" location="${prjBuildSite}/${packsSubDir}"/>
-    
+
     <property name="log4jPropJarFullName" location="${projectHome}/${libSubDir}/log4j.properties.jar"/>
 
     <target name="create-dtd">
@@ -47,8 +47,8 @@
         </exec>
     </target>
 
-	<target name="compile">
-		<javac srcdir="${projectSources}" destdir="${dirBuild}" includeantruntime="false">
+    <target name="compile">
+        <javac srcdir="${projectSources}" destdir="${dirBuild}" includeantruntime="false">
             <classpath>
                 <pathelement path="${projectHome}"/>
                 <fileset dir="${projectHome}/${libSubDir}">
@@ -56,10 +56,10 @@
                     <include name="*.jar"/>
                 </fileset>
             </classpath>
-			<include name="**/*.java" />
-			<exclude name="**/test/**" />
-		</javac>
-	</target>
+            <include name="**/*.java" />
+            <exclude name="**/test/**" />
+        </javac>
+    </target>
 
     <target name="jar" depends="set-access">
         <delete dir="${dirBinFullSet}"/>
@@ -71,7 +71,7 @@
         <jar destfile="${dirBinFullSet}/ypcnv.jar">
             <manifest>
                 <attribute name="Main-Class" value="ypcnv.converter.main.Main"/>
-                <attribute name="Class-Path" value=". help.txt ${libSubDir}/cardme-v0.2.6.jar ${libSubDir}/charva-1.1.4.jar ${libSubDir}/commons-logging-api.jar ${libSubDir}/commons-logging.jar ${libSubDir}/dom4j-1.6.1.jar ${libSubDir}/java-getopt-1.0.14.jar ${libSubDir}/log4j-1.2.13.jar ${libSubDir}/log4j.properties.jar ${libSubDir}/mime-dir-j-2.1.0-1.jar ${libSubDir}/org.junit_4.8.2.v4_8_2_v20110321-1705__junit.jar 
+                <attribute name="Class-Path" value=". help.txt ${libSubDir}/cardme-v0.2.6.jar ${libSubDir}/charva-1.1.4.jar ${libSubDir}/commons-logging-api.jar ${libSubDir}/commons-logging.jar ${libSubDir}/dom4j-1.6.1.jar ${libSubDir}/java-getopt-1.0.14.jar ${libSubDir}/log4j-1.2.13.jar ${libSubDir}/log4j.properties.jar ${libSubDir}/mime-dir-j-2.1.0-1.jar ${libSubDir}/org.junit_4.8.2.v4_8_2_v20110321-1705__junit.jar
                 ${libSubDir}/poi-3.8-beta4-20110826.jar
                 ${libSubDir}/poi-excelant-3.8-beta4-20110826.jar ${libSubDir}/poi-ooxml-3.8-beta4-20110826.jar ${libSubDir}/poi-ooxml-schemas-3.8-beta4-20110826.jar ${libSubDir}/poi-scratchpad-3.8-beta4-20110826.jar ${libSubDir}/stax-api-1.0.1.jar ${libSubDir}/xmlbeans-2.3.0.jar"/>
             </manifest>
@@ -92,7 +92,7 @@
                 <include name="*.jar"/>
             </fileset>
         </copy>
-        <copy file="${projectHome}/lib/charva/libTerminal.so" todir="${dirBinFullSet}/${libSubDir}"/>
+        <copy file="${projectHome}/lib/libTerminal.so" todir="${dirBinFullSet}/${libSubDir}"/>
         <exec executable="chmod" dir="${dirBinFullSet}" failonerror="true">
             <arg line="0755 ypcnv" />
         </exec>
@@ -128,7 +128,7 @@
                 <include name="*.jar"/>
             </fileset>
         </copy>
-        <copy file="${projectHome}/lib/charva/libTerminal.so" todir="${dirBinFullSet}/${libSubDir}"/>
+        <copy file="${projectHome}/lib/libTerminal.so" todir="${dirBinFullSet}/${libSubDir}"/>
         <exec executable="chmod" dir="${dirBinFullSet}" failonerror="true">
             <arg line="0755 ypcnv" />
         </exec>
@@ -188,7 +188,7 @@
         </antcall>
         <delete file="${srcJarName}"/>
         <delete file="${srcPackName}"/>
-        
+
         <jar destfile="${srcJarName}">
             <zipfileset dir="${projectHome}" includes="COPYING"/>
             <zipfileset dir="${projectHome}" includes="README"/>
@@ -210,7 +210,7 @@
             <param name="chkSumTargetFile" value="${srcPackName}"/>
         </antcall>
     </target>
-    
+
     <target name="pack-bin" depends="set-access, getTimestamp">
         <property name="binPackName" value="${dirPackExportTo}/ypcnv-${versionTimestamp}-bin.tar.bz2"/>
         <antcall target="dir.pickup">
@@ -250,10 +250,10 @@
         <tar destfile="${depsPackName}" compression="bzip2">
             <tarfileset dir="${projectDeps}" prefix="ypcnv/${libSubDir}" preserveLeadingSlashes="false">
                 <type type="file"/>
-                
+
                 <include name="*"/>
                 <!-- <depth max="1"/> -->
-                
+
             </tarfileset>
         </tar>
         <antcall target="createChkSumForFile">
@@ -273,18 +273,18 @@
     <target name="dir.create" unless="dir.check.isExists">
         <mkdir dir="${dirName}" />
     </target>
-    
+
     <target name="createChkSumForFile">
         <checksum file="${chkSumTargetFile}"
               pattern="{0}  {1}"
               algorithm="SHA-256" fileext=".sha256.asc"/>
     </target>
-    
+
     <target name="getTimestamp">
         <tstamp >
             <format property="versionTimestamp" pattern="yyMMdd"/>
         </tstamp>
     </target>
 
-    
+
 </project>
